@@ -168,6 +168,18 @@ export default function Carrusel({intervalo = 5000, modelo = "banner" }) {
   }, []);
 
   if (modelo === "banner") {
+    if (data.length === 0) {
+      // Skeleton mientras carga
+      return (
+        <section
+          aria-label="Carrusel de banners cargando"
+          className="relative w-full aspect-[3.84/1] overflow-hidden bg-gray-200 animate-pulse rounded-xl"
+        >
+          <div className="w-full h-full" />
+        </section>
+      );
+    }
+    
     return (
       <section
         aria-label="Carrusel de banners"

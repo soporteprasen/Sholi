@@ -129,7 +129,7 @@ export default function MbarraPrincipal() {
           title="Inicio Prasen"
         >
           <Image
-            src={imagenLogo}
+            src={"/logo/prasen.webp"}
             alt="Logo"
             width={48}
             height={48}

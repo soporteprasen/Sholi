@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { ObtenerImagenProducto } from "@/lib/api";
+import { useState } from "react";
 
 const Banner = () => {
   const [url, setUrl] = useState(null);
@@ -37,6 +36,7 @@ const Banner = () => {
           height={600}
           className="w-full h-auto rounded-xl"
           priority
+          fetchPriority="high"
         />
       </div>
     </section>
