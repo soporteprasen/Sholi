@@ -142,7 +142,7 @@ export default function Slider({ contenido = [], modo = "certificado", intervalo
       </h2>
 
       {/* Swipe Indicator SOLO en Mobile */}
-      <div className="absolute top-2 left-2 flex items-center gap-2 md:hidden text-gray-400 text-xs">
+      <div className="absolute top-2 left-2 flex items-center gap-2 md:hidden text-gray-700 text-xs">
         <ArrowLeftRight className="w-4 h-4 animate-bounce-x" aria-hidden="true" />
         <span>Desliza</span>
       </div>

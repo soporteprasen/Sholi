@@ -90,7 +90,7 @@ export default function Footer() {
             className="w-full px-3 py-2 border rounded mb-2"
             aria-label="Correo electrónico"
           />
-          <button className="bg-[#d7e600] text-sm px-4 py-2 rounded text-white font-semibold hover:brightness-110">
+          <button className="bg-[#d7e600] text-sm px-4 py-2 rounded text-black font-semibold">
             ENVIAR
           </button>
           <div className="mt-2 text-xs">

@@ -46,7 +46,6 @@ export const obtenerProductosConDescuento = async () => {
     }
 };
 
-
 //Obtener lista de productos para el administrador
 export const obtenerProductosAdmin = async () => {
     try{

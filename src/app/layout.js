@@ -23,7 +23,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  console.log(process.env.NEXT_PUBLIC_SIGNALR_URL)
   return (
     <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>

@@ -5,6 +5,7 @@ import { Menu, Settings, ShoppingCart, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import MbarraCategorizada from "./MbarraCategorizada";
 import { obtenerCoincidenciasBuscador, ObtenerImagenProducto, RecorrerCarpetaImagenes } from "@/lib/api";
+import Image from "next/image";
 
 export default function MbarraPrincipal() {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -23,8 +24,8 @@ export default function MbarraPrincipal() {
   
         if (rutas.length > 0) {
           try {
-            const blob = await ObtenerImagenProducto(rutas[0].urlImagen);
-            const url = URL.createObjectURL(blob);
+            // const blob = await ObtenerImagenProducto(rutas[0].urlImagen);
+            // const url = URL.createObjectURL(blob);
             setImagenLogo(url);
           } catch {
             setImagenLogo("/not-found.webp");
@@ -35,7 +36,9 @@ export default function MbarraPrincipal() {
         setImagenLogo("/not-found.webp");
       }
     };
-      cargarLogo();
+    setImagenLogo("/logo/prasen.png");
+
+    //cargarLogo();
   }, []);
 
   useEffect(() => {
@@ -125,7 +128,13 @@ export default function MbarraPrincipal() {
           aria-label="Ir al inicio de Prasen"
           title="Inicio Prasen"
         >
-          <img src={imagenLogo} alt="Logo" className="h-full max-h-12 w-auto object-contain"/>
+          <Image
+            src={imagenLogo}
+            alt="Logo"
+            width={48}
+            height={48}
+            className="h-full max-h-12 w-auto object-contain"
+          />
         </a>
 
         {/* Iconos */}

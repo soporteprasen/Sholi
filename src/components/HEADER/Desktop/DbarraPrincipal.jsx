@@ -10,7 +10,6 @@ export default function DbarraPrincipal() {
   const [resultados, setResultados] = useState([]);
   const [mostrarResultados, setMostrarResultados] = useState(false);
   const [tieneMas, setTieneMas] = useState(false);
-  const [imagenLogo, setImagenLogo] = useState("/not-found.webp");
   const contenedorRef = useRef();
   const router = useRouter();
   const inputRef = useRef();
@@ -34,8 +33,7 @@ export default function DbarraPrincipal() {
         setImagenLogo("/not-found.webp");
       }
     };
-
-    cargarLogo();
+    //cargarLogo();
   }, []);
 
   useEffect(() => {
@@ -175,7 +173,7 @@ export default function DbarraPrincipal() {
           aria-label="Ir al inicio de Prasen"
           title="Inicio Prasen"
         >
-          <img src={imagenLogo} alt="Logo" className="h-full max-h-12 w-auto object-contain"/>
+          <img src={"/logo/prasen.png"} alt="Logo" className="h-full max-h-12 w-auto object-contain"/>
         </a>
 
         {/* Íconos */}
@@ -192,6 +190,7 @@ export default function DbarraPrincipal() {
           {/* Administrar */}
           <a href="/Administrador">
             <Settings className="w-6 h-6" aria-hidden="true" />
+            <span className="sr-only">Ir al panel de administrador</span>
           </a>
 
           {/* Favoritos */}

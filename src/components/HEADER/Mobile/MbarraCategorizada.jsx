@@ -1,27 +1,10 @@
 import { useState } from "react";
-import { X, Heart, User } from "lucide-react"; // 👈 Nuevos íconos Lucide
+import { X} from "lucide-react"; // 👈 Nuevos íconos Lucide
 import Link from "next/link";
 
 import Productos from './CategoriaDesplegable/Productos';
 
 export default function MbarraCategorizada({ abierto, cerrar }) {
-  const [productosAbierto, setProductosAbierto] = useState(false);
-
-  const toggleProductos = () => setProductosAbierto(!productosAbierto);
-
-  const subcategorias = [
-    "Enchufes y tomacorrientes",
-    "Interruptores y placas",
-    "Tableros Eléctricos",
-    "Canalización y soportería",
-    "Sistema puesta a tierra",
-    "Conduit y conexiones",
-    "Distribución Eléctrica",
-    "Iluminación",
-    "Cableado estructurado",
-    "Complementos para instalaciones eléctricas"
-  ];
-
   return (
     <>
       {/* Overlay oscuro, más claro para mejor visibilidad */}
@@ -52,16 +35,16 @@ export default function MbarraCategorizada({ abierto, cerrar }) {
         </div>
 
         <ul className="text-sm text-gray-800 font-medium overflow-y-auto pb-24">
-          <Productos />
-          {/* Otras categorías */}
-          <li className="px-4 py-3 border-b"><Link
-                href="/Contacto"
-                className="px-2 hover:text-indigo-600 transition inline-flex h-full items-center"
-              >
-                Contacto
-              </Link></li>
-          <li className="px-4 py-3 border-b flex items-center gap-2">
-            <Heart className="w-5 h-5 text-pink-500" aria-hidden="true" /> LISTA DE DESEOS
+          <li>
+            <Productos />
+          </li>
+          <li className="px-4 py-3 border-b">
+            <Link
+              href="/Contacto"
+              className="px-2 hover:text-indigo-600 transition inline-flex h-full items-center"
+            >
+              Contacto
+            </Link>
           </li>
         </ul>
       </div>
