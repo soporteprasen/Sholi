@@ -10,7 +10,6 @@ import {
   Instagram,
   MessageSquare,
 } from "lucide-react";
-import Contenido from "@/components/Contenido";
 import PreguntasFrecuentes from "@/components/PreguntasFrecuentes";
 
 export default function Contacto() {
