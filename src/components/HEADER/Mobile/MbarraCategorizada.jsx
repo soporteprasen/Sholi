@@ -22,7 +22,7 @@ export default function MbarraCategorizada({ abierto, cerrar }) {
         aria-labelledby="menu-title"
       >
         <div className="flex justify-between items-center p-4 border-b">
-          <h2 id="menu-title" className="text-lg font-semibold text-[#112B5E]">
+          <h2 id="menu-titulo" className="text-lg font-semibold text-[#112B5E]">
             Menu
           </h2>
           <button

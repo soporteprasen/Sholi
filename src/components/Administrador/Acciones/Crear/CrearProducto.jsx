@@ -689,12 +689,12 @@ export default function CrearProducto({ onCancel }) {
                 {/* Botón Agregar */}
                 <div
                   className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded cursor-pointer aspect-square"
-                  onClick={() => document.getElementById('fileUploadNuevo').click()}
+                  onClick={() => document.getElementById('fileUploadNuevoProducto').click()}
                 >
                   <span className="text-4xl text-gray-500">+</span>
                   <span className="text-sm text-gray-500">Agregar Imagen</span>
                   <input
-                    id="fileUploadNuevo"
+                    id="fileUploadNuevoProducto"
                     type="file"
                     accept="image/*"
                     onChange={handleAgregarImagen}

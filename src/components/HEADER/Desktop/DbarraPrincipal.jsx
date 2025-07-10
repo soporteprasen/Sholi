@@ -176,6 +176,8 @@ export default function DbarraPrincipal() {
           <Image
             src={"/logo/prasen.webp"}
             alt="Logo"
+            width={118}
+            height={48}
             className="h-full max-h-12 w-auto object-contain"
           />
         </a>

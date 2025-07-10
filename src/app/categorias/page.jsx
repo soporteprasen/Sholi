@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { obtenerCategorias, ObtenerImagenProducto } from "@/lib/api";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 export default function PaginaCategorias() {
   const [categorias, setCategorias] = useState([]);
@@ -79,7 +80,7 @@ export default function PaginaCategorias() {
                   className="group block border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition"
                 >
                   <div className="w-full aspect-[1/1.1] relative overflow-hidden">
-                    <img
+                    <Image
                       src={cat.imagen_categoria}
                       alt={cat.nombre}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
