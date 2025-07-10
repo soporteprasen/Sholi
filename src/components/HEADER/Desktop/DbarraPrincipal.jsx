@@ -173,7 +173,11 @@ export default function DbarraPrincipal() {
           aria-label="Ir al inicio de Prasen"
           title="Inicio Prasen"
         >
-          <img src={"/logo/prasen.webp"} alt="Logo" className="h-full max-h-12 w-auto object-contain"/>
+          <Image
+            src={"/logo/prasen.webp"}
+            alt="Logo"
+            className="h-full max-h-12 w-auto object-contain"
+          />
         </a>
 
         {/* Íconos */}
