@@ -27,8 +27,6 @@ const Banner = () => {
   //   };
   // }, []);
 
-  if (!url) return null;
-
   return (
     <section className="py-6 bg-white text-center">
       <div className="w-full max-w-[1520px] mx-auto">
