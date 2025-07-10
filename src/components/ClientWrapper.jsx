@@ -4,7 +4,7 @@
 import { useAltura } from "./AlturaContext";
 import Header from "./Header";
 import Footer from "./Footer";
-import FBlock from "./FBlock";
+import FBlock from "./Fblock";
 import Wasapp from "./WspFlot";
 
 export default function ClientWrapper({ children }) {
