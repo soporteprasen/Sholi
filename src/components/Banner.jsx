@@ -42,7 +42,8 @@ const Banner = () => {
           />
         </div>
         
-        <div className="block md:hidden">
+        {/* Vista desktop */}
+        <div className="hidden md:block">
           <Image
             src={"/banner/BANNER-DE-DESCUENTO-ALEX-WEB.webp"}
             alt="Banner de descuento Alex"
