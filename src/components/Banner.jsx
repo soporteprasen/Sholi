@@ -29,15 +29,30 @@ const Banner = () => {
   return (
     <section className="py-6 bg-white text-center">
       <div className="w-full max-w-[1520px] mx-auto">
-        <Image
-          src={"/banner/BANNER-DE-DESCUENTO-ALEX-WEB.webp"}
-          alt="Banner de descuento Alex"
-          width={1920}
-          height={600}
-          className="w-full h-auto rounded-xl"
-          priority
-          fetchPriority="high"
-        />
+        {/* Vista móvil */}
+        <div className="block md:hidden">
+          <Image
+            src={"/banner/BANNER-DE-DESCUENTO-ALEX-WEB.webp"}
+            alt="Banner de descuento Alex"
+            width={430}
+            height={59}
+            className="w-full h-auto rounded-xl"
+            priority
+            fetchPriority="high"
+          />
+        </div>
+        
+        <div className="block md:hidden">
+          <Image
+            src={"/banner/BANNER-DE-DESCUENTO-ALEX-WEB.webp"}
+            alt="Banner de descuento Alex"
+            width={1520}
+            height={210}
+            className="w-full h-auto rounded-xl"
+            priority
+            fetchPriority="high"
+          />
+        </div>
       </div>
     </section>
   );
