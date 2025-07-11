@@ -37,8 +37,6 @@ const Banner = () => {
             width={430}
             height={59}
             className="w-full h-auto rounded-xl"
-            priority
-            fetchPriority="high"
           />
         </div>
         
@@ -50,8 +48,6 @@ const Banner = () => {
             width={1520}
             height={210}
             className="w-full h-auto rounded-xl"
-            priority
-            fetchPriority="high"
           />
         </div>
       </div>
