@@ -4,6 +4,7 @@ import { Search, User, Settings, ShoppingCart } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {obtenerCoincidenciasBuscador, ObtenerImagenProducto, RecorrerCarpetaImagenes} from "@/lib/api"; 
+import Image from "next/image";
 
 export default function DbarraPrincipal() {
   const [texto, setTexto] = useState("");
