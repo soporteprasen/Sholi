@@ -60,6 +60,7 @@ export default function Slider({ contenido = [], modo = "certificado" }) {
                 <img
                   src={item.imagenUrlTemporal || item.imagen || item.url || "/not-found.webp"}
                   alt={item.nombre || item.NombreArchivo || "Imagen"}
+                  loading={i === 0 ? "eager" : "lazy"}
                   className="object-contain max-w-[215px] max-h-[215px]"
                   draggable="false"
                 />

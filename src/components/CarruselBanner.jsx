@@ -4,7 +4,7 @@ export default function CarruselBanner({ imagenes }) {
   return (
     <section
       id="banner-carousel"
-      className="relative w-full aspect-[3.84/1] overflow-hidden"
+      className="relative w-full overflow-hidden aspect-square sm:aspect-[3.84/1]"
       aria-label="Carrusel principal"
     >
       {/* Slides */}
