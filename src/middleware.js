@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const PUBLIC_ROUTES = ['/Sesion'];
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+const userAgent = request.headers.get('user-agent') || '';
+const esMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
 
 export async function middleware(request) {
   const token = request.cookies.get('jwt')?.value;
@@ -25,7 +26,8 @@ export async function middleware(request) {
         console.log('🔴 Token inválido, no se borra nada');
       }
     }
-
+    response.headers.set('x-es-mobile', esMobile ? '1' : '0');
+    
     return response;
   }
 

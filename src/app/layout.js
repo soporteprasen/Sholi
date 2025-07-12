@@ -1,7 +1,7 @@
 // app/layout.js o app/layout.tsx
+import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AlturaProvider } from "@/components/AlturaContext";
-import "./globals.css";
 import ClientWrapper from "@/components/ClientWrapper";
 
 const geistSans = Geist({

@@ -1,6 +1,5 @@
 // components/ClientWrapper.jsx
 "use client";
-
 import { useAltura } from "./AlturaContext";
 import Header from "./Header";
 import Footer from "./Footer";
