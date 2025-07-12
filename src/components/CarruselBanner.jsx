@@ -1,4 +1,5 @@
 import { ChevronLeft,ChevronRight} from "lucide-react";
+import Image from "next/image";
 
 export default function CarruselBanner({ imagenes }) {
   return (
@@ -17,12 +18,22 @@ export default function CarruselBanner({ imagenes }) {
           data-carousel-item
         >
           <picture>
-            <source media="(max-width:768px)" srcSet={img.mobile} />
-            <img
+            <source
+              media="(max-width:768px)"
+              srcSet={img.mobile}
+              width={412}
+              height={412}
+              sizes="(max-width:768px) 100vw"
+            />
+            <Image
               src={img.desktop}
               alt={img.alt}
+              width={1335}
+              height={348}
+              sizes="(min-width:769px) 100vw"
               className="w-full h-full object-cover"
-              loading="eager"
+              priority={i === 0} // para el primero
+              fetchPriority={i === 1 ? "high" : "auto"}
               draggable={false}
             />
           </picture>

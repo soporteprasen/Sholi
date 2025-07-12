@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Slider({ contenido = [], modo = "certificado" }) {
   const isMarcas = modo === "marcas";
   const isCertificados = modo === "certificado";
@@ -49,7 +51,7 @@ export default function Slider({ contenido = [], modo = "certificado" }) {
                   className="flex flex-col items-center hover:opacity-90 transition"
                   draggable={false}
                 >
-                  <img
+                  <Image
                     src={item.imagenUrlTemporal || item.imagen || item.url || "/not-found.webp"}
                     alt={item.nombre || item.NombreArchivo || "Imagen"}
                     className="object-contain max-w-[215px] max-h-[215px]"
@@ -57,9 +59,11 @@ export default function Slider({ contenido = [], modo = "certificado" }) {
                   />
                 </a>
               ) : (
-                <img
+                <Image
                   src={item.imagenUrlTemporal || item.imagen || item.url || "/not-found.webp"}
                   alt={item.nombre || item.NombreArchivo || "Imagen"}
+                  width={215}
+                  height={108}
                   loading={i === 0 ? "eager" : "lazy"}
                   className="object-contain max-w-[215px] max-h-[215px]"
                   draggable="false"

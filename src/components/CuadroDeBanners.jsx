@@ -48,9 +48,10 @@ const CuadroDeBanners = ({ contenido }) => {
             >
               <Image
                 src={item.imagen}
-                alt={item.nombre || `Banner ${idx + 1}`}
-                width={580}
-                height={320}
+                alt={item.nombre}
+                width={290}
+                height={126}
+                sizes="(max-width:768px) 290px"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />
