@@ -3,7 +3,7 @@
 import { Search, User, Settings, ShoppingCart } from "lucide-react"; 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import {obtenerCoincidenciasBuscador, ObtenerImagenProducto, RecorrerCarpetaImagenes} from "@/lib/api"; 
+import {obtenerCoincidenciasBuscador, ObtenerImagenProducto} from "@/lib/api"; 
 import Image from "next/image";
 
 export default function DbarraPrincipal() {
@@ -15,27 +15,6 @@ export default function DbarraPrincipal() {
   const router = useRouter();
   const inputRef = useRef();
 
-  useEffect(() => {
-    const cargarLogo = async () => {
-      try {
-        const rutas = await RecorrerCarpetaImagenes("imagenes/logo-tienda");
-
-        if (rutas.length > 0) {
-          try {
-            const blob = await ObtenerImagenProducto(rutas[0].urlImagen);
-            const url = URL.createObjectURL(blob);
-            setImagenLogo(url);
-          } catch {
-            setImagenLogo("/not-found.webp");
-          }
-        }
-      } catch (error) {
-        console.error("Error al cargar logo:", error);
-        setImagenLogo("/not-found.webp");
-      }
-    };
-    //cargarLogo();
-  }, []);
 
   useEffect(() => {
     const handleClickFuera = (e) => {
@@ -175,7 +154,7 @@ export default function DbarraPrincipal() {
           title="Inicio Prasen"
         >
           <Image
-            src={"/logo/prasen.webp"}
+            src={"/logo/logo-principal-prasen.webp"}
             alt="Logo"
             width={118}
             height={48}

@@ -1,43 +1,7 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import { RecorrerCarpetaImagenes, ObtenerImagenProducto } from "@/lib/api";
 
-const CuadroDeBanners = () => {
-  const [contenido, setContenido] = useState([]);
-
-  useEffect(() => {
-    const cargarBanners = async () => {
-      try {
-        const rutas = await RecorrerCarpetaImagenes("imagenes/cuadro-banners");
-
-        const procesadas = await Promise.all(
-          rutas.map(async (ruta, idx) => {
-            try {
-              const blob = await ObtenerImagenProducto(ruta.urlImagen);
-              const url = URL.createObjectURL(blob);
-              return { imagen: url, nombre: `Banner ${idx + 1}` };
-            } catch {
-              return { imagen: "/not-found.webp", nombre: `Banner ${idx + 1}` };
-            }
-          })
-        );
-
-        const cantidadEsperada = 5;
-        const contenidoFinal = Array.from({ length: cantidadEsperada }, (_, i) => {
-          return procesadas[i] || { imagen: "/not-found.webp", nombre: `Banner ${i + 1}` };
-        });
-
-        setContenido(contenidoFinal);
-      } catch (error) {
-        console.error("Error al cargar banners:", error);
-      }
-    };
-
-    cargarBanners();
-  }, []);
-
+const CuadroDeBanners = ({ contenido }) => {
   if (!contenido || contenido.length === 0) return null;
 
   const imagenGrande = contenido[0];
@@ -49,7 +13,7 @@ const CuadroDeBanners = () => {
         Novedades en materiales y productos eléctricos
       </h2>
 
-      {/* PC: Banner ancho + imagen al costado */}
+      {/* PC: Banner grande + lateral */}
       <div className="hidden md:grid grid-cols-3 gap-6 max-w-[1520px] mx-auto mb-6">
         <div className="col-span-2 rounded-xl overflow-hidden">
           <Image
@@ -58,7 +22,7 @@ const CuadroDeBanners = () => {
             width={1200}
             height={350}
             className="w-full h-auto object-cover"
-            priority
+            loading="lazy"
           />
         </div>
         <div className="rounded-xl overflow-hidden">
@@ -68,12 +32,12 @@ const CuadroDeBanners = () => {
             width={600}
             height={350}
             className="w-full h-auto object-cover"
-            priority
+            loading="lazy"
           />
         </div>
       </div>
 
-      {/* Móvil: Slider horizontal */}
+      {/* Móvil: Slider */}
       <div className="block md:hidden">
         <div className="flex overflow-x-auto gap-6 px-1 scrollbar-hide snap-x snap-mandatory">
           {imagenesRestantes.slice(1).map((item, idx) => (
@@ -88,13 +52,14 @@ const CuadroDeBanners = () => {
                 width={580}
                 height={320}
                 className="w-full h-auto object-cover"
+                loading="lazy"
               />
             </div>
           ))}
         </div>
       </div>
 
-      {/* PC: 3 columnas, filas automáticas */}
+      {/* PC: Cuadrícula adicional */}
       <div className="hidden md:grid grid-cols-3 auto-rows-auto gap-6 max-w-[1520px] mx-auto">
         {imagenesRestantes.slice(1).map((item, idx) => (
           <div
@@ -107,6 +72,7 @@ const CuadroDeBanners = () => {
               width={580}
               height={320}
               className="w-full h-auto object-cover"
+              loading="lazy"
             />
           </div>
         ))}

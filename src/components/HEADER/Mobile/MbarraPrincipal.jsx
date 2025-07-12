@@ -11,35 +11,10 @@ export default function MbarraPrincipal() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [texto, setTexto] = useState("");
   const [resultados, setResultados] = useState([]);
-  const [imagenLogo, setImagenLogo] = useState("/not-found.webp");
   const [mostrarResultados, setMostrarResultados] = useState(false);
   const [tieneMas, setTieneMas] = useState(false);
   const router = useRouter();
   const contenedorRef = useRef();
-
-  useEffect(() => {
-    const cargarLogo = async () => {
-      try {
-        const rutas = await RecorrerCarpetaImagenes("imagenes/logo-tienda");
-  
-        if (rutas.length > 0) {
-          try {
-            // const blob = await ObtenerImagenProducto(rutas[0].urlImagen);
-            // const url = URL.createObjectURL(blob);
-            setImagenLogo(url);
-          } catch {
-            setImagenLogo("/not-found.webp");
-          }
-        }
-      } catch (error) {
-        console.error("Error al cargar logo:", error);
-        setImagenLogo("/not-found.webp");
-      }
-    };
-    setImagenLogo("/logo/prasen.png");
-
-    //cargarLogo();
-  }, []);
 
   useEffect(() => {
     if (menuAbierto) {
@@ -129,7 +104,7 @@ export default function MbarraPrincipal() {
           title="Inicio Prasen"
         >
           <Image
-            src={"/logo/prasen.webp"}
+            src={"/logo/logo-principal-prasen.webp"}
             alt="Logo"
             width={118}
             height={48}

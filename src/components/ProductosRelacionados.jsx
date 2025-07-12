@@ -43,7 +43,7 @@ export default function ProductosRelacionados({ idProducto }) {
         data.map(async (prod) => {
           let url1 = "";
           try {
-            const urlFinal = prod.urlImagen1?.trim() || "Default.webp";
+            const urlFinal = prod.urlImagen1?.trim() || "/Default.webp";
             const blob1 = await ObtenerImagenProducto(urlFinal);
             url1 = URL.createObjectURL(blob1);
           } catch {

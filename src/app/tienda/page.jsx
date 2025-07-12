@@ -7,7 +7,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { Filter, X, Tag, Layers, Heart, Eye} from "lucide-react";
 import BotonWsp from "@/components/BotonWsp";
 import FiltrosDesktop from "@/components/FiltrosDesktop";
-import { obtenerProductosFiltrados, ObtenerImagenProducto, obtenerCategorias, obtenerMarcas, obtenerCoincidenciasBuscador } from "@/lib/api";
+import { obtenerProductosFiltrados, obtenerCategorias, obtenerMarcas, obtenerCoincidenciasBuscador } from "@/lib/api";
 import SearchWrapper from "@/components/SearchWrapper";
 
 function slugify(texto) {
@@ -124,8 +124,7 @@ export default function PaginaTienda() {
           let url1 = "";
           try {
             if (producto.id_producto !== null) {
-              const blob1 = await ObtenerImagenProducto(producto.urlImagen1);
-              url1 = URL.createObjectURL(blob1);
+              url1 = `${process.env.NEXT_PUBLIC_SIGNALR_URL}/${producto.urlImagen1}`;
             }
           } catch (e) {
             console.error("Error al cargar imágenes de producto", producto.nombre, producto.id_producto);

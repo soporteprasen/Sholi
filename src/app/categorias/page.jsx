@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { obtenerCategorias, ObtenerImagenProducto } from "@/lib/api";
+import { obtenerCategorias} from "@/lib/api";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
@@ -22,8 +22,7 @@ export default function PaginaCategorias() {
 
             try {
               if (cat.imagen_categoria || cat.imagen_categoria.trim() === "") {
-                const blob = await ObtenerImagenProducto(cat.imagen_categoria);
-                imagenUrl = URL.createObjectURL(blob);
+                imagenUrl = `${process.env.NEXT_PUBLIC_SIGNALR_URL}/${cat.imagen_categoria}`;
               }
             } catch {
               console.error("Error al cargar imagen de categoría:", cat.nombre);

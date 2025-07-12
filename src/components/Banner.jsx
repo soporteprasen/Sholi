@@ -1,58 +1,21 @@
-"use client";
 import Image from "next/image";
-import { useState } from "react";
 
-const Banner = () => {
-  const [url, setUrl] = useState(null);
-
-  // useEffect(() => {
-  //   const cargarImagen = async () => {
-  //     try {
-  //       const blob = await ObtenerImagenProducto("imagenes/banner/BANNER-DE-DESCUENTO-ALEX-WEB.webp");
-  //       const urlTemporal = URL.createObjectURL(blob);
-  //       setUrl(urlTemporal);
-  //     } catch (e) {
-  //       console.error("Error cargando banner:", e);
-  //       setUrl("/not-found.webp");
-  //     }
-  //   };
-
-  //   cargarImagen();
-
-  //   return () => {
-  //     if (url?.startsWith("blob:")) {
-  //       URL.revokeObjectURL(url);
-  //     }
-  //   };
-  // }, []);
-
+export default function Banner() {
   return (
     <section className="py-6 bg-white text-center">
-      <div className="w-full max-w-[1520px] mx-auto">
-        {/* Vista móvil */}
-        <div className="block md:hidden">
-          <Image
-            src={"/banner/BANNER-DE-DESCUENTO-ALEX-WEB.webp"}
-            alt="Banner de descuento Alex"
-            width={430}
-            height={59}
-            className="w-full h-auto rounded-xl"
-          />
-        </div>
-        
-        {/* Vista desktop */}
-        <div className="hidden md:block">
-          <Image
-            src={"/banner/BANNER-DE-DESCUENTO-ALEX-WEB.webp"}
-            alt="Banner de descuento Alex"
-            width={1520}
-            height={210}
-            className="w-full h-auto rounded-xl"
-          />
-        </div>
+      <div className="w-full max-w-[1520px] mx-auto relative">
+        {/* un solo <Image> responsive */}
+        <Image
+          src="/banner/BANNER-DE-DESCUENTO-EN-MARCA-ALEX-WEB.webp"
+          alt="Descuento exclusivo en productos de la marca ALEX"
+          fill         /* ocupa todo el contenedor */
+          className="rounded-xl object-cover"
+          sizes="(max-width: 767px) 430px, 1520px"
+          priority     /* quítalo si el banner no es LCP */
+        />
+        <div className="block md:hidden pb-[13.8%]" />
+        <div className="hidden md:block pb-[13.8%]" />
       </div>
     </section>
   );
-};
-
-export default Banner;
+}

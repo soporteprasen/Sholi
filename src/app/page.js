@@ -1,7 +1,27 @@
-import Carrusel from "@/components/CarruselGlob";
+{/* Sliders */}
 import Slider from "@/components/Slider";
+import SliderJS from "@/components/SliderJs";
+
+{/* Carrusel productos con descuento */}
+// import CarruselProductos from "@/components/CarruselProductos";
+
+{/* Llamadas Api */}
+// import { obtenerMarcas, obtenerProductosConDescuento, obtenerCategorias } from "@/lib/api";
+
+{/* Carrusel banners */}
+import CarruselBanner from "@/components/CarruselBanner";
+import CarruselBannerJS from "@/components/CarruselBannerJS";
+
+{/* Carrusel banner */}
 import Banner from "@/components/Banner";
+
+{/* Carrusel categorias */}
+// import CarruselCategorias from "@/components/CarruselCategorias";
+
+{/* CuadroDeBanners */}
 import CuadroDeBanners from "@/components/CuadroDeBanners";
+
+{/* Preguntas Frecuentes */}
 import PreguntasFrecuentes from "@/components/PreguntasFrecuentes";
 
 export async function generateMetadata() {
@@ -19,19 +39,124 @@ export async function generateMetadata() {
   };
 }
 
-export default function Home() {
+export default async function Home() {
+  const imagenesCarrusel = [
+    {
+      desktop: "/carrucel-desktop/BANNERTECNOLOGICO.webp",
+      mobile: "/carrucel-mobil/PREMIOS-POR-FIESTAS-PATRIAS.webp",
+      alt: "Compra tecnología avanzada y participa por premios especiales",
+    },
+    {
+      desktop: "/carrucel-desktop/MEMORIAS-RAM-PREMIER-PRINT.webp",
+      mobile: "/carrucel-mobil/NUEVOS-SUMINISTROS-DISTRIBUCION.webp",
+      alt: "Nuevas memorias RAM de alto rendimiento en stock",
+    },
+    {
+      desktop: "/carrucel-desktop/INTELIGENCIA-ARTIFICIAL.webp",
+      mobile: "/carrucel-mobil/NUEVO-PRODUCTO-TUBERIA-LIQUID-TIGHT.webp",
+      alt: "Tecnología con inteligencia artificial para tu negocio",
+    },
+    {
+      desktop: "/carrucel-desktop/NUEVAS-MARCAS-PLACAS-MADRE-ASUS.webp",
+      mobile: "/carrucel-mobil/NUEVO-PRODUCTO-TUBERIA-LIQUID-TIGHT.webp",
+      alt: "Tecnología con inteligencia artificial para tu negocio",
+    },
+  ];
+
+  // const productosCrudos = await obtenerProductosConDescuento();
+  // const productos = productosCrudos.map((producto) => ({
+  //   ...producto,
+  //   urlImagen1: producto.urlImagen1 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen1 : "/not-found.webp",
+  //   urlImagen2: producto.urlImagen2 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen2 : "/not-found.webp",
+  // }));
+
+  // const categorias = await obtenerCategorias();
+  // const categoriasConImagenes = categorias.map(cat => {
+  //   let imagenUrl = "";
+  //   if (cat.imagen_categoria) {
+  //     imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + cat.imagen_categoria;
+  //   }
+  //   return { ...cat, imagen: imagenUrl };
+  // });
+
+  const certificados = [
+    {
+      imagen: "/certificados/Ansi.webp",
+      nombre: "Certificado Ansi",
+    },
+    {
+      imagen: "/certificados/IEC.webp",
+      nombre: "Certificado IEC",
+    },
+    {
+      imagen: "/certificados/ISO.webp",
+      nombre: "certificado ISO",
+    },
+    {
+      imagen: "/certificados/NEMA.webp",
+      nombre: "Certificado NEMA",
+    },
+    {
+      imagen: "/certificados/ROHS.webp",
+      nombre: "Certificado ROHS",
+    },
+    {
+      imagen: "/certificados/Ul.webp",
+      nombre: "Certificado Ul",
+    },
+    {
+      imagen: "/certificados/VDE.webp",
+      nombre: "Certificado VDE",
+    },
+  ];
+
+  // const marcas = await obtenerMarcas();
+  // const marcasConImagenes = marcas.map(mark => {
+  //   let imagenUrl = "";
+  //   if (mark.imagen_marca) {
+  //     imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + mark.imagen_marca;
+  //   }
+  //   return { ...mark, imagen: imagenUrl };
+  // });
+
+  const Banners = [
+    {
+      imagen: "/cuadro-banners/NOVEDADES-NUEVA-LINEA-POWERTOP-PLUS.webp",
+      nombre: "Nueva línea Powertop Plus para conexiones industriales",
+    },
+    {
+      imagen: "/cuadro-banners/NOVEDADES-ENCHUFER-TOMAS-INDUSTRIALES.webp",
+      nombre: "Enchufes y tomas industriales de alta resistencia",
+    },
+    {
+      imagen: "/cuadro-banners/NOVEDADES-HIGH-BAY-LED-PARA-INDUSTRIA.webp",
+      nombre: "Reflectores High Bay LED para uso industrial",
+    },
+    {
+      imagen: "/cuadro-banners/NOVEDADES-LINEA-CAMTYPE-CONECTORES-UNIPOLARES.webp",
+      nombre: "Conectores unipolares CAMTYPE para instalaciones eléctricas",
+    },
+    {
+      imagen: "/cuadro-banners/NOVEDADES-CAJAS-COMBINADAS-AMAXX.webp",
+      nombre: "Cajas combinadas AMAXX para distribución eléctrica",
+    },
+  ];
+  
   return (
     <>
-      <Carrusel modelo="banner" />
-      <h2 className="text-3xl font-bold mb-6 text-center">
+     <CarruselBanner imagenes={imagenesCarrusel} />
+     <CarruselBannerJS />
+     {/* <h2 className="text-3xl font-bold mb-6 text-center">
         Nuestras categorias
-      </h2>
-      <Carrusel modelo="categoria"/>
-      <Slider modo="certificado" />
-      <Carrusel modelo="producto" />
+      </h2> */}
+      {/* <CarruselCategorias categorias={categoriasConImagenes} /> */}
+      <Slider modo="certificado" contenido={certificados} />
+      <SliderJS modo="certificado" />
+      {/* <CarruselProductos productos={productos} /> */}
       <Banner />
-      <CuadroDeBanners />
-      <Slider modo="marcas"/>
+      <CuadroDeBanners contenido={Banners} />
+      {/* <Slider modo="marcas" contenido={marcasConImagenes} />
+      <SliderJS modo="marcas" intervalo={4000} /> */}
       <PreguntasFrecuentes />
     </>
   );

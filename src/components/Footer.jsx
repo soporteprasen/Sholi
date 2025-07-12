@@ -107,7 +107,7 @@ export default function Footer() {
         <p className="mb-2">©2023 Prasen. Todos los derechos reservados</p>
         <p>
           Desarrollado por <a href="#" className="text-blue-700 font-medium">PRASEN</a>. 
-          Diseño por <a href="#" className="text-blue-700 font-medium">danfer</a>.
+          Diseño por <a href="#" className="text-blue-700 font-medium">Danfer</a>.
         </p>
       </div>
     </footer>

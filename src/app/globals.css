@@ -166,3 +166,14 @@
     animation: accordion-up 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
   }
 }
+
+@keyframes banner-slide {
+  0% { transform: translateX(0%); }
+  33% { transform: translateX(-100%); }
+  66% { transform: translateX(-200%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-banner-slide {
+  animation: banner-slide 1s infinite ease-in-out;
+}
