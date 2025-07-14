@@ -94,15 +94,22 @@ export default function Contacto() {
 
         {/* Mapa de Google */}
         <div className="rounded-xl overflow-hidden shadow-md border">
-          <iframe
-            title="Ubicación en Google Maps"
-            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d244.0391003811622!2d-77.04959144447903!3d-11.861459069859247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2spe!4v1751927449526!5m2!1ses-419!2spe"
+          <img
+            src="https://maps.googleapis.com/maps/api/staticmap?center=-11.861459069859247,-77.04959144447903&zoom=16&size=600x400&maptype=roadmap&markers=color:red%7Clabel:P%7C-11.861459069859247,-77.04959144447903&key=TU_API_KEY"
+            alt="Ubicación Prasen en Lima"
             width="100%"
             height="400"
-            allowFullScreen=""
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+            className="w-full h-auto rounded-xl"
+          />
+          <a
+            href="https://www.google.com/maps/place/Av.+Los+Próceres+123,+Lima,+Perú"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-center text-indigo-600 mt-2 underline"
+          >
+            Ver mapa interactivo
+          </a>
         </div>
       </div>
 
