@@ -7,10 +7,12 @@ export default async function CarruselBanner({ imagenes }) {
   const userAgent = cabeceras.get("user-agent") || "";
   const esMobile = userAgent.toLowerCase().includes("mobile");
 
+  const alturaCarrusel = esMobile ? "h-[412px]" : "h-[348px]";
+
   return (
     <section
       id="banner-carousel"
-      className="relative w-full overflow-hidden aspect-[1/1] sm:aspect-[3.84/1]"
+      className={`relative w-full overflow-hidden ${alturaCarrusel}`}
       aria-label="Carrusel principal"
     >
       {imagenes.map((img, i) => {
