@@ -10,7 +10,7 @@ export default async function CarruselBanner({ imagenes }) {
   return (
     <section
       id="banner-carousel"
-      className="relative w-full overflow-hidden sm:aspect-[3.84/1] min-h-[348px] sm:min-h-0"
+      className="relative w-full overflow-hidden aspect-[1/1] sm:aspect-[3.84/1]"
       aria-label="Carrusel principal"
     >
       {imagenes.map((img, i) => {
