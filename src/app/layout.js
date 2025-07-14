@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://prasen.pe'),
   title: {
     default: 'Tienda de Iluminación - Productos LED',
     template: '%s | Tienda de Iluminación',

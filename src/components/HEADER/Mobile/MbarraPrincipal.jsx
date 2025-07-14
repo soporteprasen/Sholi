@@ -145,7 +145,7 @@ export default function MbarraPrincipal() {
             {resultados.map((prod) => (
               <div
                 key={prod.id_producto}
-                onClick={() => router.push(`/p/${prod.nombreSlug}`)}
+                onClick={() => router.push(`/producto/${prod.nombreSlug}`)}
                 className="flex items-center gap-3 p-3 border-b last:border-0 cursor-pointer hover:bg-gray-100"
               >
                 <img

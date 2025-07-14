@@ -180,7 +180,7 @@ export default function PaginaTienda() {
       router.push("/tienda");
     } else {
       const nuevaCategoriaSlug = slugify(nombre);
-      router.push(`/c/${nuevaCategoriaSlug}`);
+      router.push(`/categoria/${nuevaCategoriaSlug}`);
     }
   };
 
@@ -188,14 +188,14 @@ export default function PaginaTienda() {
   const cambiarMarca = (nombreMarca) => {
     if (nombreMarca === "Todas") {
       if (categoriaSlug) {
-        router.push(`/c/${categoriaSlug}`);
+        router.push(`/categoria/${categoriaSlug}`);
       } else {
         router.push("/tienda");
       }
     } else {
       const nuevaMarcaSlug = slugify(nombreMarca);
       if (categoriaSlug) {
-        router.push(`/c/${categoriaSlug}/${nuevaMarcaSlug}`);
+        router.push(`/categoria/${categoriaSlug}/${nuevaMarcaSlug}`);
       } else {
         router.push(`/tienda/${nuevaMarcaSlug}`);
       }
@@ -219,7 +219,7 @@ export default function PaginaTienda() {
       return `${baseUrl}/tienda`;
     }
     if (categoriaSlug) {
-      let url = `${baseUrl}/c/${categoriaSlug}`;
+      let url = `${baseUrl}/categoria/${categoriaSlug}`;
       if (marcaSlug) {
         url += `/${marcaSlug}`;
       }
@@ -372,7 +372,7 @@ export default function PaginaTienda() {
                           />
 
                           <a
-                            href={`/p/${prod.nombreSlug}`}
+                            href={`/producto/${prod.nombreSlug}`}
                             title={`Ver detalles de ${prod.nombre}`}
                             aria-label={`Ver detalles de ${prod.nombre}`}
                             className="flex items-center justify-center gap-1 px-2 py-1 text-xs sm:text-sm text-blue-600 hover:bg-blue-50 transition w-full"

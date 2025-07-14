@@ -29,7 +29,7 @@ export default function AdministrarWsp() {
     fetchMensajes();
   });
 
-  const PrevisualizacionP = `${MensajeProducto}\n\n*Código: XXXXXXXXXX Producto: XXXXXXXX Link: https://sholi.com/p/XXXXXXXXXX*`
+  const PrevisualizacionP = `${MensajeProducto}\n\n*Código: XXXXXXXXXX Producto: XXXXXXXX Link: https://sholi.com/producto/XXXXXXXXXX*`
   const PrevisualizacionG = `${MensajeGlobal}\n\n*Código: Producto: Link: *`
 
   const handleSubmit = async (e) => {

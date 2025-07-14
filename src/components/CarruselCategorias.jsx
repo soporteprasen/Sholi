@@ -6,7 +6,7 @@ export default function CarruselCategorias({ categorias }) {
         {categorias.map((cat, index) => (
           <a
             key={index}
-            href={`/c/${cat.slug_categoria}`}
+            href={`/categoria/${cat.slug_categoria}`}
             className="w-[120px] flex-shrink-0 bg-white rounded-lg px-3 py-4 shadow-sm hover:shadow-md transition text-center snap-start"
             draggable={false}
           >

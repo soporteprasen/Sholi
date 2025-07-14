@@ -59,7 +59,7 @@ export default function CarruselProductos({ productos }) {
                 </button>
 
                 <a
-                  href={`/p/${item.nombreSlug}`}
+                  href={`/producto/${item.nombreSlug}`}
                   className="flex items-center gap-1 text-blue-600 hover:underline px-2 py-2 transition w-full justify-center"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

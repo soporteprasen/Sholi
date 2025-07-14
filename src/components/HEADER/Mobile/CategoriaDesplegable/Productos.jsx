@@ -38,7 +38,7 @@ export default function Productos() {
           {categorias.map((cat, idx) => (
             <button
               key={idx}
-              onClick={() => router.push(`/c/${cat.slug_categoria}`)}
+              onClick={() => router.push(`/categoria/${cat.slug_categoria}`)}
               className="w-full text-left rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-800 hover:bg-gray-50 transition-shadow shadow-sm hover:shadow"
               aria-label={`Ver productos de ${cat.nombre}`}
               title={`Ver productos de ${cat.nombre}`}

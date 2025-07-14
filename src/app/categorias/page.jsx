@@ -1,50 +1,38 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { obtenerCategorias} from "@/lib/api";
-import { ArrowRight } from "lucide-react";
+// app/categorias/page.jsx
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+import { obtenerCategorias } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function PaginaCategorias() {
-  const [categorias, setCategorias] = useState([]);
-  const [cargando, setCargando] = useState(true);
+export const metadata = {
+  title: "Categorías de Materiales Eléctricos | Tienda Online",
+  description: "Explora nuestras principales categorías de productos eléctricos industriales, comerciales y residenciales.",
+};
 
-  useEffect(() => {
-    const cargarCategorias = async () => {
-      try {
-        const data = await obtenerCategorias();
-        const categoriasValidas = data.filter((cat) => cat.valorConsulta === "1");
+export default async function PaginaCategorias() {
+  let categorias = [];
 
-        const categoriasConImagen = await Promise.all(
-          categoriasValidas.map(async (cat, index) => {
-            let imagenUrl = `/categorias/Categoria${(index % 5) + 1}.webp`;
+  try {
+    const data = await obtenerCategorias();
+    const categoriasValidas = data.filter((cat) => cat.valorConsulta === "1");
 
-            try {
-              if (cat.imagen_categoria || cat.imagen_categoria.trim() === "") {
-                imagenUrl = `${process.env.NEXT_PUBLIC_SIGNALR_URL}/${cat.imagen_categoria}`;
-              }
-            } catch {
-              console.error("Error al cargar imagen de categoría:", cat.nombre);
-            }
+    categorias = await Promise.all(
+      categoriasValidas.map(async (cat) => {
+        let imagenUrl = "/not-found.webp";
 
-            return {
-              ...cat,
-              imagen_categoria: imagenUrl,
-            };
-          })
-        );
+        if (cat.imagen_categoria) {
+          imagenUrl = `${process.env.NEXT_PUBLIC_SIGNALR_URL}/${cat.imagen_categoria}`;
+        }
 
-        setCategorias(categoriasConImagen);
-      } catch (error) {
-        console.error("Error al cargar categorías:", error);
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    cargarCategorias();
-  }, []);
+        return {
+          ...cat,
+          imagen_categoria: imagenUrl,
+        };
+      })
+    );
+  } catch (error) {
+    console.error("Error al cargar categorías:", error);
+  }
 
   return (
     <main className="bg-white py-10 px-4">
@@ -57,24 +45,24 @@ export default function PaginaCategorias() {
         </p>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-          {cargando
+          {categorias.length === 0
             ? Array.from({ length: 8 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="border rounded-xl overflow-hidden shadow-sm bg-white"
-              >
-                <Skeleton className="w-full aspect-[1/1.1]" />
-                <div className="p-4 space-y-2 text-center">
-                  <Skeleton className="h-5 w-3/4 mx-auto" />
-                  <Skeleton className="h-4 w-5/6 mx-auto" />
-                  <Skeleton className="h-4 w-2/3 mx-auto" />
-                  <Skeleton className="h-5 w-1/2 mx-auto mt-4" />
+                <div
+                  key={idx}
+                  className="border rounded-xl overflow-hidden shadow-sm bg-white"
+                >
+                  <Skeleton className="w-full aspect-[1/1.1]" />
+                  <div className="p-4 space-y-2 text-center">
+                    <Skeleton className="h-5 w-3/4 mx-auto" />
+                    <Skeleton className="h-4 w-5/6 mx-auto" />
+                    <Skeleton className="h-4 w-2/3 mx-auto" />
+                    <Skeleton className="h-5 w-1/2 mx-auto mt-4" />
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
             : categorias.map((cat) => (
                 <a
-                  href={`/c/${cat.slug_categoria}`}
+                  href={`/categoria/${cat.slug_categoria}`}
                   key={cat.id_categoria}
                   className="group block border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition"
                 >
@@ -83,6 +71,8 @@ export default function PaginaCategorias() {
                       src={cat.imagen_categoria}
                       alt={cat.nombre}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      width={400}
+                      height={440}
                       loading="lazy"
                     />
                   </div>

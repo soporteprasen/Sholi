@@ -75,7 +75,7 @@ export default function ProductosRelacionados({ idProducto }) {
           return (
             <a
               key={idx}
-              href={`/p/${item.nombreSlug}`}
+              href={`/producto/${item.nombreSlug}`}
               className="w-[220px] flex-shrink-0 border rounded-md shadow-sm bg-white hover:shadow-md transition overflow-hidden flex flex-col"
               draggable="false"
             >

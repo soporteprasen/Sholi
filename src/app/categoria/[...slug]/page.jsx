@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Head from "next/head";
 import * as Accordion from "@radix-ui/react-accordion";
-import { Filter, X, Tag, Layers, Heart, Eye, MessageCircleMore } from "lucide-react";
+import { Filter, X, Tag, Layers, Heart, Eye } from "lucide-react";
 import FiltrosDesktop from "@/components/FiltrosDesktop";
 import BotonWsp from "@/components/BotonWsp";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -102,9 +102,9 @@ export default function PaginaTienda() {
     }
     const nuevaCategoriaSlug = slugify(nombre);
     if (marcaSlug) {
-      router.push(`/c/${nuevaCategoriaSlug}/${marcaSlug}`);
+      router.push(`/categoria/${nuevaCategoriaSlug}/${marcaSlug}`);
     } else {
-      router.push(`/c/${nuevaCategoriaSlug}`);
+      router.push(`/categoria/${nuevaCategoriaSlug}`);
     }
   };
 
@@ -112,14 +112,14 @@ export default function PaginaTienda() {
   const cambiarMarca = (nombreMarca) => {
     if (nombreMarca === "Todas") {
       if (categoriaSlug) {
-        router.push(`/c/${categoriaSlug}`);
+        router.push(`/categoria/${categoriaSlug}`);
       } else {
         router.push("/tienda");
       }
       return;
     }
     const nuevaMarcaSlug = slugify(nombreMarca);
-    router.push(`/c/${categoriaSlug}/${nuevaMarcaSlug}`);
+    router.push(`/categoria/${categoriaSlug}/${nuevaMarcaSlug}`);
   };
 
   // SEO dinámico
@@ -129,7 +129,7 @@ export default function PaginaTienda() {
     if (!categoriaSlug) {
       return `${baseUrl}/tienda`;
     }
-    let url = `${baseUrl}/c/${categoriaSlug}`;
+    let url = `${baseUrl}/categoria/${categoriaSlug}`;
     if (marcaSlug) {
       url += `/${marcaSlug}`;
     }
@@ -348,7 +348,7 @@ export default function PaginaTienda() {
                           />
 
                           <a
-                            href={`/p/${prod.nombreSlug}`}
+                            href={`/producto/${prod.nombreSlug}`}
                             title={`Ver detalles de ${prod.nombre}`}
                             aria-label={`Ver detalles de ${prod.nombre}`}
                             className="flex items-center justify-center gap-1 px-2 py-1 text-xs sm:text-sm text-blue-600 hover:bg-blue-50 transition w-full"

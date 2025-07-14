@@ -106,7 +106,7 @@ export default function DbarraPrincipal() {
                 <div
                   key={prod.id_producto}
                   className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => router.push(`/p/${prod.nombreSlug}`)}
+                  onClick={() => router.push(`/producto/${prod.nombreSlug}`)}
                 >
                   {/* Imagen */}
                   <div className="w-12 h-12 flex-shrink-0">

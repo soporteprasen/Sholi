@@ -29,7 +29,7 @@ export default function BotonWsp({ tipo = "inicio", codigo = "", nombre = "", sl
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
   // Armamos el link completo
-  const urlCompleta = `${baseUrl}/p/${nombreSlug}`;
+  const urlCompleta = `${baseUrl}/producto/${nombreSlug}`;
   
 
   const mensajeFinal = mensajeBase

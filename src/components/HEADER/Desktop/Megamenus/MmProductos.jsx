@@ -46,7 +46,7 @@ export default function MmProductos() {
     <div className="p-6 grid grid-cols-5 gap-4 w-[900px] max-w-[95vw] mx-auto">
       {categorias.map((categoria, index) => (
         <a
-          href={`/c/${categoria.slug_categoria}`}
+          href={`/categoria/${categoria.slug_categoria}`}
           key={index}
           className="flex flex-col items-center text-center hover:opacity-90 transition"
         >
