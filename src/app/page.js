@@ -103,23 +103,21 @@ export default async function Home() {
     },
   ];
 
-  // const productosCrudos = await obtenerProductosConDescuento();
-  // console.log(productosCrudos);
-  // const productos = productosCrudos.map((producto) => ({
-  //   ...producto,
-  //   urlImagen1: producto.urlImagen1 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen1 : "/not-found.webp",
-  //   urlImagen2: producto.urlImagen2 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen2 : "/not-found.webp",
-  // }));
+  const productosCrudos = await obtenerProductosConDescuento();
+  const productos = productosCrudos.map((producto) => ({
+    ...producto,
+    urlImagen1: producto.urlImagen1 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen1 : "/not-found.webp",
+    urlImagen2: producto.urlImagen2 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen2 : "/not-found.webp",
+  }));
 
-  // const categorias = await obtenerCategorias();
-  // console.log(categorias)
-  // const categoriasConImagenes = categorias.map(cat => {
-  //   let imagenUrl = "";
-  //   if (cat.imagen_categoria) {
-  //     imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + cat.imagen_categoria;
-  //   }
-  //   return { ...cat, imagen: imagenUrl };
-  // });
+  const categorias = await obtenerCategorias();
+  const categoriasConImagenes = categorias.map(cat => {
+    let imagenUrl = "";
+    if (cat.imagen_categoria) {
+      imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + cat.imagen_categoria;
+    }
+    return { ...cat, imagen: imagenUrl };
+  });
 
   const certificados = [
     {
@@ -152,15 +150,14 @@ export default async function Home() {
     },
   ];
 
-  // const marcas = await obtenerMarcas();
-  // console.log(marcas);
-  // const marcasConImagenes = marcas.map(mark => {
-  //   let imagenUrl = "";
-  //   if (mark.imagen_marca) {
-  //     imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + mark.imagen_marca;
-  //   }
-  //   return { ...mark, imagen: imagenUrl };
-  // });
+  const marcas = await obtenerMarcas();
+  const marcasConImagenes = marcas.map(mark => {
+    let imagenUrl = "";
+    if (mark.imagen_marca) {
+      imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + mark.imagen_marca;
+    }
+    return { ...mark, imagen: imagenUrl };
+  });
 
   const Banners = [
     {
@@ -236,30 +233,30 @@ export default async function Home() {
           Enviamos a todo el Perú con atención inmediata.
         </p>
       </section>
-      {/* {categorias.length > 0 && (
+      {categorias.length > 0 && categorias[0].valorConsulta === "1" && (
         <>
           <h2 className="text-3xl font-bold mb-6 text-center">
             Nuestras categorias
           </h2>
           <CarruselCategorias categorias={categoriasConImagenes} />
         </>)
-      } */}
+      }
       <Slider modo="certificado" contenido={certificados} />
       <SliderJS modo="certificado" />
-      {/* {productosCrudos.length > 0 && (
+      {productosCrudos.length > 0 && productosCrudos[0].valorConsulta === "1" && (
         <>
           <CarruselProductos productos={productos} />
         </>
-      )} */}
+      )}
 
       <Banner />
       <CuadroDeBanners contenido={Banners} />
-      {/* {marcas.length > 0 && (
+      {marcas.length > 0 && marcas[0].valorConsulta === "1" &&(
         <>
           <Slider modo="marcas" contenido={marcasConImagenes} />
           <SliderJS modo="marcas" intervalo={4000} />
         </>
-      )} */}
+      )}
 
       <PreguntasFrecuentes />
     </>
