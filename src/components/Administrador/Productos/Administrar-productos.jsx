@@ -19,7 +19,10 @@ export default function AdministrarProductos() {
     async function fetchProductos() {
       try {
         const data = await obtenerProductosAdmin();
-        setProductos(data || []);
+        if(data.valorConsulta === "1")
+        {  
+          setProductos(data);
+        }
       } catch (error) {
         console.error("Error al obtener productos:", error);
       } finally {
@@ -32,15 +35,15 @@ export default function AdministrarProductos() {
 
   const handleEliminar = (id) => {
     if (window.confirm("¿Estás seguro de eliminar este producto?")) {
-      EliminarProducto(id)
-        .then(() => {
-          setProductos(productos.filter((producto) => producto.id_producto !== id));
-          alert("Producto eliminado correctamente");
-        })
-        .catch((error) => {
-          console.error("Error al eliminar el producto:", error);
-          alert("Error al eliminar el producto");
-        });
+      const data = EliminarProducto(id)
+      if(data.valorConsulta === "1")
+      {
+        alert("Producto eliminado correctamente")
+      }
+      else
+      {
+        alert("erro al intentar eliminar"+data.mensajeConsulta)
+      }
     }
   };
 
@@ -50,9 +53,33 @@ export default function AdministrarProductos() {
   };
 
   const handleCancelarAccion = () => {
+    fetchProductos();
+    recargarYVolverAlInicio();
     setProductoSeleccionado(null);
     setModoEdicion(false);
     setModoCreacion(false);
+  };
+
+  const fetchProductos = async () => {
+    try {
+      setCargando(true);
+      const data = await obtenerProductosAdmin();
+      setProductos(data || []);
+    } catch (error) {
+      console.error("Error al obtener productos:", error);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const recargarYVolverAlInicio = async () => {
+    await fetchProductos();
+    setProductoSeleccionado(null);
+    setModoEdicion(false);
+    setModoCreacion(false);
+
+    // Desplazar al inicio (opcional)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleAgregarProducto = () => {
@@ -62,9 +89,9 @@ export default function AdministrarProductos() {
   return (
     <div className="p-4">
       {modoEdicion ? (
-        <EditarProducto producto={productoSeleccionado} onCancel={handleCancelarAccion} />
+        <EditarProducto producto={productoSeleccionado} onCancel={handleCancelarAccion} onFinalizar={recargarYVolverAlInicio}/>
       ) : modoCreacion ? (
-        <CrearProducto onCancel={handleCancelarAccion} />
+        <CrearProducto onCancel={handleCancelarAccion}/>
       ) : (
         <>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">

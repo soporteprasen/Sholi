@@ -1,6 +1,19 @@
 import Image from "next/image";
+import Link from "next/link";
+import { promises as fs } from "fs";
+import path from "path";
 
-export default function Slider({ contenido = [], modo = "certificado" }) {
+async function imagenExiste(rutaRelativa) {
+  try {
+    const rutaAbsoluta = path.join(process.cwd(), "public", rutaRelativa);
+    await fs.access(rutaAbsoluta);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export default async function Slider({ contenido = [], modo = "certificado" }) {
   const isMarcas = modo === "marcas";
   const isCertificados = modo === "certificado";
 
@@ -8,8 +21,26 @@ export default function Slider({ contenido = [], modo = "certificado" }) {
     ? [...contenido, ...contenido, ...contenido]
     : contenido;
 
+  let contenidoValidado = elementosVisibles;
+
+  if (isCertificados) {
+    contenidoValidado = await Promise.all(
+      elementosVisibles.map(async (item) => {
+        const rawSrc = item.imagenUrlTemporal || item.imagen || item.url || "";
+        const src = rawSrc.startsWith("/") ? rawSrc : `/${rawSrc}`;
+
+        const existe = await imagenExiste(src);
+        const imagenFinal = existe ? src : "/not-found.webp";
+
+        return { ...item, imagenFinal };
+      })
+    );
+  }
+
   return (
     <section
+      role="region"
+      aria-label={isCertificados ? "Certificaciones de productos" : "Marcas representadas"}
       className="py-12 bg-white text-center select-none relative"
       data-slider={modo}
     >
@@ -39,35 +70,41 @@ export default function Slider({ contenido = [], modo = "certificado" }) {
 
       <div className="slider-scroll overflow-x-auto scroll-smooth no-scrollbar cursor-grab active:cursor-grabbing">
         <div className="slider-contenido inline-flex gap-6 px-4 mx-auto snap-x snap-mandatory">
-          {elementosVisibles.map((item, i) => (
+          {(isCertificados ? contenidoValidado : elementosVisibles).map((item, i) => (
             <div
               key={i}
               className="flex-shrink-0 snap-start bg-white rounded-xl flex items-center justify-center"
               style={{ minWidth: "200px", minHeight: "190px" }}
             >
               {isMarcas ? (
-                <a
+                <Link
                   href={`/tienda/${item.slug_marca}`}
                   className="flex flex-col items-center hover:opacity-90 transition"
                   draggable={false}
                 >
-                  <Image
-                    src={item.imagenUrlTemporal || item.imagen || item.url || "/not-found.webp"}
-                    alt={item.nombre || item.NombreArchivo || "Imagen"}
-                    className="object-contain max-w-[215px] max-h-[215px]"
-                    draggable="false"
-                  />
-                </a>
+                  <div className="relative w-[215px] h-[108px]">
+                    <Image
+                      src={item.imagen || item.url || "/not-found.webp"}
+                      alt={item.nombre || item.NombreArchivo || "Marca"}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 215px, 215px"
+                      draggable={false}
+                    />
+                  </div>
+                </Link>
               ) : (
-                <Image
-                  src={item.imagenUrlTemporal || item.imagen || item.url || "/not-found.webp"}
-                  alt={item.nombre || item.NombreArchivo || "Imagen"}
-                  width={215}
-                  height={108}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  className="object-contain max-w-[215px] max-h-[215px]"
-                  draggable="false"
-                />
+                <div className="relative w-[215px] h-[108px]">
+                  <Image
+                    src={item.imagenFinal}
+                    alt={item.nombre || item.NombreArchivo || "Certificación"}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 215px, 215px"
+                    loading={i === 0 ? "eager" : "lazy"}
+                    draggable={false}
+                  />
+                </div>
               )}
             </div>
           ))}

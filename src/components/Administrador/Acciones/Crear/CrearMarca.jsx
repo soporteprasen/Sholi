@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import CropperModal from "@/components/CropperModal";
 import { crearMarca } from "@/lib/api";
@@ -49,8 +49,8 @@ export default function CrearMarca({ onCancel }) {
   };
 
   const handleGuardarMarca = async () => {
-    if (!formulario.nombre?.trim() || !formulario.descripcion?.trim()) {
-      alert("Nombre y descripción son obligatorios.");
+    if (!formulario.nombre?.trim()) {
+      alert("Nombre es obligatorio.");
       return;
     }
 

@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
-const userAgent = request.headers.get('user-agent') || '';
-const esMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
 
 export async function middleware(request) {
+  const userAgent = request.headers.get('user-agent') || '';
+  const esMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
+
   const token = request.cookies.get('jwt')?.value;
   const { pathname } = request.nextUrl;
 
@@ -26,8 +27,8 @@ export async function middleware(request) {
         console.log('🔴 Token inválido, no se borra nada');
       }
     }
+
     response.headers.set('x-es-mobile', esMobile ? '1' : '0');
-    
     return response;
   }
 

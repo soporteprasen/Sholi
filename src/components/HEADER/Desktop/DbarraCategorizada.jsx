@@ -1,89 +1,48 @@
-"use client";
-import { useState } from "react";
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
-  NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
+import Link from "next/link";
 import MmProductos from "./Megamenus/MmProductos";
 import MmMarcas from "./Megamenus/MmMarcas";
-import Link from "next/link";
 
 export default function DbarraCategorizada() {
-  const [menuActivo, setMenuActivo] = useState("");
-  
-
   return (
     <nav className="bg-white shadow-sm border-t border-gray-200">
-      <NavigationMenu className="w-full">
-        <NavigationMenuList className="flex justify-center gap-4 px-4 text-sm font-medium text-gray-700 h-12">
+      <div className="max-w-screen-xl mx-auto px-4">
+        <ul className="flex justify-center gap-6 text-sm font-medium text-gray-700 h-12 items-center relative">
           {/* Productos */}
-          <NavigationMenuItem className="relative">
-            <NavigationMenuTrigger
-              className="hover:text-indigo-600 transition bg-transparent"
-              onPointerEnter={() => setMenuActivo("productos")}
+          <li className="relative group h-full flex items-center">
+            <Link
+              href="/categorias"
+              className="inline-flex items-center h-full px-4 hover:text-indigo-600 transition"
             >
-              <a href="/categorias" className="inline-flex items-center justify-center h-12 px-4 text-sm font-medium">
-                Productos
-              </a>
-            </NavigationMenuTrigger>
-            <NavigationMenuContent className="w-auto mx-auto">
-              {menuActivo === "productos" && <MmProductos />}
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+              Productos
+            </Link>
+
+            <div className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-[1px] z-50 opacity-0 scale-95 pointer-events-none transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto bg-white border border-gray-200 shadow-xl rounded-md w-[1000px] max-w-[95vw]">
+              <MmProductos />
+            </div>
+          </li>
 
           {/* Marcas */}
-          <NavigationMenuItem className="relative">
-            <NavigationMenuTrigger
-              className="hover:text-indigo-600 transition bg-transparent"
-              onPointerEnter={() => setMenuActivo("marcas")}
-            >
+          <li className="relative group h-full flex items-center">
+            <span className="inline-flex items-center h-full px-4 hover:text-indigo-600 transition cursor-pointer">
               Marcas
-            </NavigationMenuTrigger>
-            <NavigationMenuContent className="w-auto mx-auto">
-              {menuActivo === "marcas" && <MmMarcas />}
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+            </span>
 
-          {/* Nosotros */}
-          {/* <NavigationMenuItem className="relative">
-            <NavigationMenuTrigger
-              className="hover:text-indigo-600 transition bg-transparent"
-              onPointerEnter={() => setMenuActivo("nosotros")}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 z-50 opacity-0 scale-95 pointer-events-none transition-all duration-200 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto bg-white border border-gray-200 shadow-xl rounded-md w-[1000px] max-w-[95vw]">
+              <MmMarcas />
+            </div>
+          </li>
+
+          {/* Contacto */}
+          <li className="h-full flex items-center">
+            <Link
+              href="/Contacto"
+              className="inline-flex items-center h-full px-4 hover:text-indigo-600 transition"
             >
-              Nosotros
-            </NavigationMenuTrigger>
-            <NavigationMenuContent className="w-auto mx-auto">
-              {menuActivo === "nosotros" && (
-                <ul className="bg-white shadow-md rounded-md min-w-[200px] py-2">
-                  {["Historia", "Equipo", "Misión"].map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </NavigationMenuContent>
-          </NavigationMenuItem> */}
-
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link
-                href="/Contacto"
-                className="px-2 hover:text-indigo-600 transition inline-flex h-full items-center"
-              >
-                Contacto
-              </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+              Contacto
+            </Link>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }

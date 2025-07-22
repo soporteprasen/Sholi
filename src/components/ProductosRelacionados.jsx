@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ObtenerProductoRelacionados, ObtenerImagenProducto } from "@/lib/api";
+import { ObtenerProductoRelacionados } from "@/lib/api";
 
 export default function ProductosRelacionados({ idProducto }) {
   const [relacionados, setRelacionados] = useState([]);
@@ -21,7 +21,7 @@ export default function ProductosRelacionados({ idProducto }) {
     if (!isDragging.current) return;
     e.preventDefault();
     const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - startX.current) * 1.2; // velocidad del arrastre
+    const walk = (x - startX.current) * 1.2;
     scrollRef.current.scrollLeft = scrollLeft.current - walk;
   };
 
@@ -38,22 +38,19 @@ export default function ProductosRelacionados({ idProducto }) {
     if (!idProducto) return;
 
     const cargarRelacionados = async () => {
-      const data = await ObtenerProductoRelacionados(idProducto);
-      const productosConBlobs = await Promise.all(
-        data.map(async (prod) => {
-          let url1 = "";
-          try {
-            const urlFinal = prod.urlImagen1?.trim() || "/Default.webp";
-            const blob1 = await ObtenerImagenProducto(urlFinal);
-            url1 = URL.createObjectURL(blob1);
-          } catch {
-            console.error("⚠️ Imagen no cargada:", prod.nombre);
-          }
-          return { ...prod, urlImagen1: url1 };
-        })
-      );
-
-      setRelacionados(productosConBlobs);
+      try {
+        const data = await ObtenerProductoRelacionados(idProducto);
+        const productosConBlobs = await Promise.all(
+          data.map(async (prod) => {
+            const urlValida = prod.urlImagen1?.trim();
+            const url1 = urlValida ? process.env.NEXT_PUBLIC_SIGNALR_URL + urlValida : "/not-found.webp";
+            return { ...prod, urlImagen1: url1 };
+          })
+        );
+        setRelacionados(productosConBlobs);
+      } catch (error) {
+        console.error("❌ Error al cargar productos relacionados:", error);
+      }
     };
 
     cargarRelacionados();
@@ -90,9 +87,13 @@ export default function ProductosRelacionados({ idProducto }) {
               </div>
 
               <div className="p-3 flex flex-col flex-grow justify-between">
+                <p className="text-sm text-gray-500 italic">
+                  Marca: <span className="font-medium text-gray-700">{item.marca}</span>
+                </p>
                 <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 break-words">
                   {item.nombre}
                 </h3>
+
                 <p className="text-gray-500 text-xs line-clamp-2">{item.descripcion}</p>
 
                 <div className="mt-3">

@@ -102,22 +102,6 @@ export default function SidebarAdmin({ onSelectOption, onCloseSidebar }) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <button
-                className="flex items-center gap-2 w-full px-3 py-2 text-red-500 hover:bg-red-50 rounded"
-                onClick={handleLogout}
-              >
-                <LogOut className="w-5 h-5" />
-                <span>Cerrar sesión</span>
-              </button>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 }

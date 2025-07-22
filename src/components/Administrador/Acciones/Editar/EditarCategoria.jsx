@@ -19,6 +19,7 @@ export default function EditarCategoria({ categoria, onCancel }) {
   const [estadoInicial, setEstadoInicial] = useState(null);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const cargarImagen = async () => {
       if (!categoria.imagen_categoria) return;
       try {

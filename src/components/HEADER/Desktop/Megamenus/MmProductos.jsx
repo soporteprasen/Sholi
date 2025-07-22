@@ -1,65 +1,45 @@
-"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { obtenerCategorias } from "@/lib/api";
 
-import { useEffect, useState } from "react";
-import { obtenerCategorias, ObtenerImagenProducto } from "@/lib/api";
+export default async function MmProductos() {
+  const data = await obtenerCategorias();
+  const categoriasValidas = data.filter((c) => c.valorConsulta === "1");
 
-export default function MmProductos() {
-  const [categorias, setCategorias] = useState([]);
+  const categoriasConLogo = categoriasValidas.map((categoria) => {
+    const tieneImagen =
+      categoria.imagen_categoria && categoria.imagen_categoria.trim() !== "";
 
-  useEffect(() => {
-    const cargarCategorias = async () => {
-      try {
-        const data = await obtenerCategorias();
-        const categoriasValidas = data.filter((m) => m.valorConsulta === "1");
+    const logo = tieneImagen
+      ? process.env.NEXT_PUBLIC_SIGNALR_URL + categoria.imagen_categoria
+      : "/not-found.webp";
 
-        const categoriasConLogo = await Promise.all(
-          categoriasValidas.map(async (categoria) => {
-            let logo = "/not-found.webp";
-
-            if (categoria.imagen_categoria || categoria.imagen_categoria.trim() == "") {
-              try {
-                const blob = await ObtenerImagenProducto(categoria.imagen_categoria);
-                logo = URL.createObjectURL(blob);
-              } catch {
-                console.error("Error al cargar imagen:", categoria.nombre);
-              }
-            }
-
-            return {
-              nombre: categoria.nombre,
-              slug_categoria: categoria.slug_categoria,
-              logo,
-            };
-          })
-        );
-
-        setCategorias(categoriasConLogo);
-      } catch (error) {
-        console.error("Error al cargar categorías:", error);
-      }
+    return {
+      nombre: categoria.nombre,
+      slug_categoria: categoria.slug_categoria,
+      logo,
     };
-
-    cargarCategorias();
-  }, []);
+  });
 
   return (
     <div className="p-6 grid grid-cols-5 gap-4 w-[900px] max-w-[95vw] mx-auto">
-      {categorias.map((categoria, index) => (
-        <a
-          href={`/categoria/${categoria.slug_categoria}`}
-          key={index}
+      {categoriasConLogo.map((cat) => (
+        <Link
+          key={cat.slug_categoria}
+          href={`/categoria/${cat.slug_categoria}`}
           className="flex flex-col items-center text-center hover:opacity-90 transition"
         >
-          <img
-            src={categoria.logo}
-            alt={`Logo de la categoría ${categoria.nombre}`}
-            className="h-10 object-contain mb-1"
-            loading="lazy"
-          />
-          <span className="text-sm text-gray-700" itemProp="brand">
-            {categoria.nombre}
-          </span>
-        </a>
+          <div className="w-10 h-10 relative">
+            <Image
+              src={cat.logo}
+              alt={cat.nombre}
+              fill
+              className="object-contain"
+              sizes="40px"
+            />
+          </div>
+          <span className="text-sm text-gray-700">{cat.nombre}</span>
+        </Link>
       ))}
     </div>
   );

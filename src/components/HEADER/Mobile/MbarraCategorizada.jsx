@@ -1,46 +1,40 @@
-import { X} from "lucide-react"; // 👈 Nuevos íconos Lucide
+import { X } from "lucide-react";
 import Link from "next/link";
+import Productos from "../Mobile/CategoriaDesplegable/Productos";
+import Marcas from "./CategoriaDesplegable/Marcas";
 
-import Productos from './CategoriaDesplegable/Productos';
-
-export default function MbarraCategorizada({ abierto, cerrar }) {
+export default function MbarraCategorizada() {
   return (
     <>
-      {/* Overlay oscuro, más claro para mejor visibilidad */}
+      {/* Menú lateral */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-30 transition-opacity duration-300 z-40 ${abierto ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-        onClick={cerrar}
-        aria-hidden="true"
-      />
-
-      {/* Sidebar */}
-      <div
-        className={`fixed top-0 left-0 right-0 bottom-[45px] bg-white shadow-lg z-50 transform transition-transform duration-300 ${abierto ? 'translate-x-0' : '-translate-x-full'}`}
+        id="menu-lateral"
+        className="fixed top-0 left-0 right-0 bottom-[45px] bg-white shadow-lg z-50 transform transition-transform duration-300 -translate-x-full"
         role="dialog"
         aria-modal="true"
-        aria-label="menu-titulo"
+        aria-label="Menú lateral"
       >
         <div className="flex justify-between items-center p-4 border-b">
-          <h2 id="menu-titulo" className="text-lg font-semibold text-[#112B5E]">
-            Menu
-          </h2>
+          <h2 className="text-lg font-semibold text-[#112B5E]">Menú</h2>
           <button
-            onClick={cerrar}
+            id="boton-cerrar-menu"
             aria-label="Cerrar menú"
-            className="text-[#112B5E] hover:text-red-600 transition"
+            title="Cerrar menú"
+            className="text-[#112B5E] hover:text-red-600 transition cursor-pointer"
           >
-            <X className="w-6 h-6" aria-hidden="true" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         <ul className="text-sm text-gray-800 font-medium overflow-y-auto pb-24">
-          <li>
-            <Productos />
-          </li>
+          <li><Productos /></li>
+          <li><Marcas /></li>
           <li className="px-4 py-3 border-b">
             <Link
               href="/Contacto"
-              className="px-2 hover:text-indigo-600 transition inline-flex h-full items-center"
+              className="px-2 hover:text-indigo-600 transition inline-flex items-center cerrar-menu"
+              aria-label="Ir a la página de contacto"
+              title="Contacto"
             >
               Contacto
             </Link>

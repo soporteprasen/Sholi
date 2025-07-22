@@ -29,22 +29,24 @@ export default function Contacto() {
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           name: "Prasen",
-          image: "https://tusitio.com/logo.png",
-          "@id": "https://tusitio.com",
-          url: "https://tusitio.com/contacto",
+          image: "https://prasen.pe/logo-prasen.png",
+          "@id": "https://prasen.pe",
+          url: "https://prasen.pe/contacto",
           telephone: "+51 987654321",
+          email: "contacto@prasen.pe",
+          priceRange: "$$",
           address: {
             "@type": "PostalAddress",
             streetAddress: "Av. Los Próceres 123",
             addressLocality: "Lima",
-            addressCountry: "PE",
+            addressCountry: "PE"
           },
           openingHours: "Mo-Fr 09:00-18:00",
           sameAs: [
-            "https://facebook.com",
-            "https://instagram.com",
-            "https://wa.me/51987654321",
-          ],
+            "https://facebook.com/praseniluminacion",
+            "https://instagram.com/prasenled",
+            "https://wa.me/51987654321"
+          ]
         })}
       </Script>
 
@@ -54,10 +56,9 @@ export default function Contacto() {
         </h1>
 
         <p className="text-sm text-gray-600 text-center max-w-2xl mx-auto mb-6">
-          En <strong>Prasen</strong> brindamos soluciones tecnológicas avanzadas para pequeñas y medianas empresas.
-          Si tienes dudas sobre nuestros productos, deseas soporte técnico o necesitas una cotización,
-          ponte en contacto con nosotros. <br />
-          Nuestra oficina se encuentra en Lima, Perú, y ofrecemos atención personalizada a nivel nacional.
+          En <strong>Prasen</strong>, tu distribuidor de <strong>iluminación LED</strong> en Lima, Perú,
+          brindamos soluciones tecnológicas avanzadas para pequeñas y medianas empresas.
+          ¿Buscás <em>soporte técnico</em> o <em>productos eléctricos de calidad</em>? ¡Contáctanos!
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">

@@ -48,8 +48,8 @@ export default function CrearCategoria({ onCancel }) {
   };
 
   const handleGuardarCategoria = async () => {
-    if (!formulario.nombre?.trim() || !formulario.descripcion?.trim()) {
-      alert("Nombre y descripción son obligatorios.");
+    if (!formulario.nombre?.trim()) {
+      alert("Nombre es obligatorio.");
       return;
     }
 

@@ -19,6 +19,7 @@ export default function EditarMarca({ marca, onCancel }) {
   const [estadoInicial, setEstadoInicial] = useState(null);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const cargarImagen = async () => {
       if (!marca.imagen_marca) return;
       try {
@@ -32,7 +33,7 @@ export default function EditarMarca({ marca, onCancel }) {
 
     setEstadoInicial({
       nombre: marca.nombre,
-      descripcion: marca.descripcion,
+      descripcion: marca.descripcion || "",
       imagen_marca: marca.imagen_marca || "",
     });
 

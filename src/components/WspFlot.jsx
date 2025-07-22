@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { obtenerMensajesWsp } from "@/lib/api";
 
 export default function Wasapp() {
-  const [mensaje,setMensaje] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [numero, setNumero] = useState("")
   useEffect(() => {
     const fetchMensaje = async () => {
       try {
         const data = await obtenerMensajesWsp();
         if (data && data.mensajeGlobal) {
           setMensaje(data.mensajeGlobal);
+          setNumero(data.numero)
         } else {
           setMensaje("¡Hola! ¿En qué puedo ayudarte?");
         }
@@ -22,7 +24,7 @@ export default function Wasapp() {
   }, []);
 
   const urlWhatsApp = mensaje
-    ? `https://api.whatsapp.com/send/?phone=51903021399&text=${encodeURIComponent(mensaje)}`
+    ? `https://api.whatsapp.com/send/?phone=51${numero}&text=${encodeURIComponent(mensaje)}`
     : "#";
   return (
     <a

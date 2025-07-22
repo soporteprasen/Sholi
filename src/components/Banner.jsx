@@ -1,20 +1,37 @@
 import Image from "next/image";
+import { promises as fs } from "fs";
+import path from "path";
 
-export default function Banner() {
+async function imagenExiste(rutaRelativa) {
+  try {
+    const rutaAbsoluta = path.join(process.cwd(), "public", rutaRelativa);
+    await fs.access(rutaAbsoluta);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export default async function Banner() {
+  const rutaImagen = "/banner/BANNER-DE-DESCUENTO-EN-MARCA-ALEX-WEB.webp";
+  const existe = await imagenExiste(rutaImagen);
+  const imagenFinal = existe ? rutaImagen : "/not-found.webp";
+
   return (
-    <section className="py-6 bg-white text-center">
-      <div className="w-full max-w-[1520px] mx-auto relative">
-        {/* un solo <Image> responsive */}
+    <section
+      className="py-6 bg-white text-center"
+      role="region"
+      aria-label="Banner de promoción de marca ALEX"
+    >
+      <div className="w-full max-w-[1520px] mx-auto relative aspect-[1520/210]">
         <Image
-          src="/banner/BANNER-DE-DESCUENTO-EN-MARCA-ALEX-WEB.webp"
+          src={imagenFinal}
           alt="Descuento exclusivo en productos de la marca ALEX"
-          fill         /* ocupa todo el contenedor */
-          className="rounded-xl object-cover"
+          fill
+          className="object-cover"
           sizes="(max-width: 767px) 430px, 1520px"
-          priority     /* quítalo si el banner no es LCP */
+          loading="eager"
         />
-        <div className="block md:hidden pb-[13.8%]" />
-        <div className="hidden md:block pb-[13.8%]" />
       </div>
     </section>
   );

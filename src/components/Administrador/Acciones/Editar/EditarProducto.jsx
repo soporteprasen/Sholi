@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Eye, Trash2 } from "lucide-react";
 import CropperModal from "@/components/CropperModal"; // o el path correcto
 import { editarProducto, obtenerCategorias, obtenerMarcas, obtenerUnidades, obtenerProductoPorId, ObtenerImagenProducto, ObtenerArchivoFicha } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function EditarProducto({ producto, onCancel }) {
+export default function EditarProducto({ producto, onCancel, onFinalizar }) {
   const [formulario, setFormulario] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const fileInputRef = useRef(null);
@@ -33,6 +33,7 @@ export default function EditarProducto({ producto, onCancel }) {
   const [arrastrando, setArrastrando] = useState(false);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     async function fetchData() {
       try {
         const productoCompleto = await obtenerProductoPorId(producto.id_producto);
@@ -92,7 +93,7 @@ export default function EditarProducto({ producto, onCancel }) {
         setProductoCompleto(productoCompleto);
 
       } catch (error) {
-        
+
       } finally {
         setCargando(false);
       }
@@ -107,30 +108,30 @@ export default function EditarProducto({ producto, onCancel }) {
         productoCompleto.imagenes
           .filter(img => img.urlImagen && img.urlImagen.trim() !== "")
           .map(async (img) => {
-          try {
-            const blob = await ObtenerImagenProducto(img.urlImagen);
-            const url = URL.createObjectURL(blob);
+            try {
+              const blob = await ObtenerImagenProducto(img.urlImagen);
+              const url = URL.createObjectURL(blob);
 
-            // 👇 Volvemos a determinar principalTipo
-            let principalTipo = null;
-            if (productoCompleto.urlImagen1 === img.urlImagen) {
-              principalTipo = 1;
-            } else if (productoCompleto.urlImagen2 === img.urlImagen) {
-              principalTipo = 2;
+              // 👇 Volvemos a determinar principalTipo
+              let principalTipo = null;
+              if (productoCompleto.urlImagen1 === img.urlImagen) {
+                principalTipo = 1;
+              } else if (productoCompleto.urlImagen2 === img.urlImagen) {
+                principalTipo = 2;
+              }
+
+              return {
+                ...img,
+                idImagenProducto: img.idImagen,
+                imagenBlob: blob,
+                imagenUrlTemporal: url,
+                principalTipo: principalTipo
+              };
+            } catch (error) {
+              alert("Error cargando imagen:", img.urlImagen);
+              return null;
             }
-
-            return {
-              ...img,
-              idImagenProducto: img.idImagen ,
-              imagenBlob: blob,
-              imagenUrlTemporal: url,
-              principalTipo: principalTipo
-            };
-          } catch (error) {
-            alert("Error cargando imagen:", img.urlImagen);
-            return null;
-          }
-        })
+          })
       );
       setImagenes(imagenesCargadas.filter(Boolean));
     };
@@ -166,7 +167,7 @@ export default function EditarProducto({ producto, onCancel }) {
     if (imagenEliminada?.urlImagen) {
       setImagenesEliminadas(prev => [...prev, imagenEliminada.urlImagen]);
     }
-    
+
     const nuevoEstado = imagenes.filter(img => img.idImagenProducto !== idImagenProducto);
     guardarEnHistorial(nuevoEstado);
     setImagenes(nuevoEstado);
@@ -205,7 +206,7 @@ export default function EditarProducto({ producto, onCancel }) {
     setHistorialIndex(-1); // Resetear el puntero del historial
     setPrincipalMode(null); // Cancelar modo de selección
   };
-  
+
   const handleUndo = () => {
     if (historialIndex > 0) {
       setHistorialIndex(historialIndex - 1);
@@ -220,7 +221,7 @@ export default function EditarProducto({ producto, onCancel }) {
     }
   };
 
-  const handleAgregarImagen = (event) => {
+  const handleAgregarImagen = (event, tipoPrincipal = null) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
@@ -230,6 +231,7 @@ export default function EditarProducto({ producto, onCancel }) {
         img.onload = () => {
           setImagenOriginal(dataUrl);
           setIsCropperOpen(true);
+          setPrincipalMode(tipoPrincipal); // <- importante: ya dejamos marcado el tipo
         };
         img.onerror = () => {
           alert("La imagen está dañada o no se puede procesar.");
@@ -238,7 +240,7 @@ export default function EditarProducto({ producto, onCancel }) {
         img.src = dataUrl;
       };
       reader.readAsDataURL(file);
-    }else{
+    } else {
       alert("Por favor, selecciona una imagen válida.");
       event.target.value = "";
     }
@@ -249,15 +251,20 @@ export default function EditarProducto({ producto, onCancel }) {
 
     const nuevaImagen = {
       idImagenProducto: Math.floor(Math.random() * 1000),
-      imagenBlob: blob, 
+      imagenBlob: blob,
       imagenUrlTemporal: urlTemporal,
       urlImagen: "",
-      principalTipo: null,
+      principalTipo: principalMode,
     };
 
-    const nuevoEstado = [...imagenes, nuevaImagen];
+    const imagenesSinEsaPrincipal = imagenes.filter(
+      img => img.principalTipo !== principalMode
+    );
+
+    const nuevoEstado = [...imagenesSinEsaPrincipal, nuevaImagen];
     guardarEnHistorial(nuevoEstado);
     setImagenes(nuevoEstado);
+    setPrincipalMode(null); // <- limpia después de asignar
   };
 
   const handleChange = (e) => {
@@ -282,7 +289,7 @@ export default function EditarProducto({ producto, onCancel }) {
   };
 
   const seModificoInformacionPrincipal = () => {
-      if (!formulario || !productoCompleto) return false;
+    if (!formulario || !productoCompleto) return false;
 
     return (
       formulario.codigo !== productoCompleto.codigo ||
@@ -308,7 +315,7 @@ export default function EditarProducto({ producto, onCancel }) {
   };
 
   const seModificoFicha = () => archivoFicha !== null;
-  
+
   const seModificaronCategorias = () => {
     const originales = (productoCompleto.categoria ?? []).map(c => c.id_categoria).sort();
     const actuales = (formulario.categorias ?? []).map(c => c.id_categoria).sort();
@@ -404,7 +411,7 @@ export default function EditarProducto({ producto, onCancel }) {
 
     // 🔹 Categorías
     if (seModificaronCategorias) {
-      cambios.Categoria = formulario.categorias.map(c =>({
+      cambios.Categoria = formulario.categorias.map(c => ({
         Id_categoria: c.id_categoria
       }));
     }
@@ -468,7 +475,7 @@ export default function EditarProducto({ producto, onCancel }) {
       alert("Por favor, complete todos los campos obligatorios.");
       return;
     }
-    
+
     const sinImagenesNuevas = !Array.isArray(cambios.imagenes) || cambios.imagenes.length === 0;
     const seEliminaronImagenes = Array.isArray(cambios.imagenesEliminadas) && cambios.imagenesEliminadas.length > 0;
     const sinImagenesOriginales = imagenesOriginales.length === 0;
@@ -489,25 +496,20 @@ export default function EditarProducto({ producto, onCancel }) {
     }
 
     setGuardando(true);
-    try 
-    { 
+    try {
       const response = await editarProducto(formulario.idProducto, cambios);
-      if (response.ValorConsulta == "1" || response.valorConsulta == "1") 
-      {
+      if (response.valorConsulta === "1") {
         alert("Producto editado correctamente");
       }
-      else
-      {
-        alert("Error al editar el producto: " + response.MensajeConsulta + response.ValorConsulta);
+      else {
+        alert("Error al editar el producto: " + response.mensajeConsulta+ " " + response.valorConsulta);
       }
       if (onCancel) onCancel();
-    } 
-    catch (error) 
-    {
+    }
+    catch (error) {
       alert("Hubo un error al editar el producto");
     }
-    finally
-    {
+    finally {
       setGuardando(false); // ⛔ Desbloquea el botón
     }
   };
@@ -659,14 +661,14 @@ export default function EditarProducto({ producto, onCancel }) {
               {/* Imagen Principal 1 */}
               <div className="flex flex-col items-center w-[180px]">
                 <label className="block mb-1 font-semibold text-center">Imagen Principal 1</label>
-                <div className="aspect-square w-full border rounded bg-gray-50 flex items-center justify-center overflow-hidden">
+
+                {/* Envolvemos en label para que al hacer click se active el input */}
+                <label className="aspect-square w-full border rounded bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer">
                   {(() => {
                     const img1 = imagenes.find(img => img.principalTipo === 1);
                     return img1 ? (
                       <img
-                        src={
-                          img1.imagenUrlTemporal
-                        }
+                        src={img1.imagenUrlTemporal}
                         className="object-contain w-full h-full"
                         alt="Imagen Principal 1"
                       />
@@ -674,20 +676,24 @@ export default function EditarProducto({ producto, onCancel }) {
                       <span className="text-gray-400 italic">No asignada</span>
                     );
                   })()}
-                </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleAgregarImagen(e, 1)}
+                  />
+                </label>
               </div>
 
               {/* Imagen Principal 2 */}
               <div className="flex flex-col items-center w-[180px]">
                 <label className="block mb-1 font-semibold text-center">Imagen Principal 2</label>
-                <div className="aspect-square w-full border rounded bg-gray-50 flex items-center justify-center overflow-hidden">
+                <label className="aspect-square w-full border rounded bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer">
                   {(() => {
                     const img2 = imagenes.find(img => img.principalTipo === 2);
                     return img2 ? (
                       <img
-                        src={
-                          img2.imagenUrlTemporal
-                        }
+                        src={img2.imagenUrlTemporal}
                         className="object-contain w-full h-full"
                         alt="Imagen Principal 2"
                       />
@@ -695,11 +701,17 @@ export default function EditarProducto({ producto, onCancel }) {
                       <span className="text-gray-400 italic">No asignada</span>
                     );
                   })()}
-                </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleAgregarImagen(e, 2)} // ⬅ principalTipo = 2
+                  />
+                </label>
               </div>
             </div>
           </div>
-          
+
           <div>
             <label className="block mb-1 font-semibold">Imágenes</label>
             <Button
@@ -709,7 +721,7 @@ export default function EditarProducto({ producto, onCancel }) {
               Ver Imágenes
             </Button>
           </div>
-                
+
           {/* Input para nueva ficha técnica */}
           <div className="md:col-span-2">
             <label className="block mb-1 font-semibold">Nueva Ficha Técnica (opcional)</label>
@@ -889,7 +901,10 @@ export default function EditarProducto({ producto, onCancel }) {
       {/* Botones */}
       <div className="flex gap-4 mt-6">
         <Button
-          onClick={handleGuardarCambios}
+          onClick={async () => {
+            await handleGuardarCambios();
+            onFinalizar();
+          }}
           disabled={!hayCambios() || guardando}
           className="bg-green-600 text-white hover:bg-green-700"
         >
@@ -956,7 +971,7 @@ export default function EditarProducto({ producto, onCancel }) {
                 <button
                   disabled={historialIndex <= 0}
                   onClick={handleUndo}
-                  className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs cursor-pointer" 
+                  className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs cursor-pointer"
                 >
                   Deshacer
                 </button>

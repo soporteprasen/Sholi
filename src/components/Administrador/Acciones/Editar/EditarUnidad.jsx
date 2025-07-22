@@ -16,6 +16,7 @@ export default function EditarUnidadMedida({ unidad, onCancel }) {
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     setEstadoInicial({
       nombre: unidad.nombre || "",
       abreviatura: unidad.abreviatura || "",

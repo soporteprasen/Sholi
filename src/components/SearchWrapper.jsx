@@ -1,12 +1,14 @@
 "use client";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function SearchWrapper({ setTextoBusqueda }) {
   const searchParams = useSearchParams();
-  const textoBusqueda = searchParams.get("buscar") || "";
 
-  // Puedes pasarlo a un state superior o usarlo directamente
-  setTextoBusqueda(textoBusqueda);
+  useEffect(() => {
+    const texto = searchParams.get("buscar") || "";
+    setTextoBusqueda(texto);
+  }, [searchParams, setTextoBusqueda]);
 
-  return null; // No renderiza nada visible
+  return null;
 }

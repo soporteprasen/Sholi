@@ -1,69 +1,66 @@
 import axios from "axios";
-import https from 'https';
 
-const httpsAgent = new https.Agent({
-  rejectUnauthorized: false, // 👈🏼 Acepta certificados no válidos (inseguro)
-});
+{/* Apis de listados/Obtencion */ }
 
 // Obtener productos Principales
 export const obtenerProductos = async () => {
-    try{
-        const config={
-            url:process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarProductosPrincipales",
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-            },
-            data:{
-                Token: 'TOKENSUPERSECRETO',
-                Vista:""
-            }
-        }
-        const response = await axios(config);
-        return response.data;
-    } catch (error){
-      throw error;
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarProductosPrincipales",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: 'TOKENSUPERSECRETO',
+        Vista: ""
+      }
     }
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 // Obtener productos con descuento
 export const obtenerProductosConDescuento = async () => {
-    try{
-        const config={
-            url:process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/ListarProductosDescuento",
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-            },
-            data:{
-                Token: "TOKENSUPERSECRETO",
-            }
-        }
-        const response = await axios(config);
-        return response.data;
-    } catch (error){
-      throw error;
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/ListarProductosDescuento",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+      }
     }
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 //Obtener lista de productos para el administrador
 export const obtenerProductosAdmin = async () => {
-    try{
-        const config={
-            url:process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarProductos",
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-            },
-            data:{
-                Token: 'TOKENSUPERSECRETO',
-            }
-        }
-        const response = await axios(config);
-        return response.data;
-    } catch (error){
-        throw error;
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarProductos",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: 'TOKENSUPERSECRETO',
+      }
     }
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 //obtener productos filtrados
@@ -93,7 +90,7 @@ export const obtenerProductosFiltrados = async (id_marca, id_categoria, orden, o
   }
 };
 
-export const obtenerCoincidenciasBuscador = async (contenido, desde, cantidad ) => {
+export const obtenerCoincidenciasBuscador = async (contenido, desde, cantidad, orden, orden2) => {
   try {
     const config = {
       url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/BuscadorIndex",
@@ -103,9 +100,11 @@ export const obtenerCoincidenciasBuscador = async (contenido, desde, cantidad ) 
       },
       data: {
         token: "TOKENSUPERSECRETO",
-        contenido:contenido,
+        contenido: contenido,
         desde: desde,
         cantidad: cantidad,
+        orden: orden,
+        orden2: orden2,
       }
     };
 
@@ -142,58 +141,26 @@ export const obtenerProductoPorId = async (idProducto) => {
 
 //obtener producto por slug
 export const obtenerProductoPorSlug = async (slug) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/ListarProductoPorSlug",
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/ListarProductoPorSlug",
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      data: {
+      body: JSON.stringify({
         Token: "TOKENSUPERSECRETO",
         NombreSlug: slug,
-      }
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-// Crear producto
-export const registrarProducto = async (producto) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/guardarCrearProducto", // Reemplaza con el endpoint correcto si es distinto
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+      }),
+      next: {
+        revalidate: 60,
       },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        Codigo: producto.codigo,
-        Nombre: producto.nombre,
-        Descripcion: producto.descripcion,
-        Precio: parseFloat(producto.precio),
-        Descuento: parseFloat(producto.descuento),
-        Stock: parseFloat(producto.stock),
-        NombreSlug: "",
-        UrlImagen1: producto.urlImagen1,
-        UrlImagen2: producto.urlImagen2,
-        Marca: producto.marca,         
-        Categoria: producto.categoria,    
-        MensajeConsulta: "", 
-        ValorConsulta: "",  
-      },
-    };
+    }
+  );
 
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  if (!res.ok) throw new Error("Error al obtener el producto");
+
+  return res.json();
 };
 
 // Recorrer imagenes por url de la carpeta
@@ -252,25 +219,25 @@ export const ObtenerArchivoFicha = async (urlRelativa) => {
 };
 
 // Obtener categorías de productos
-export const obtenerCategorias = async () => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarCategoriasProductos",
+export async function obtenerCategorias() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SIGNALR_URL}/CTproductos/listarCategoriasProductos`,
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      data: {
+      body: JSON.stringify({
         Token: "TOKENSUPERSECRETO",
-      },
-    };
+      }),
+      next: { revalidate: 300 },
+    }
+  );
 
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+  if (!res.ok) throw new Error("Error al obtener categorías");
+
+  return res.json();
+}
 
 // Obtener Producto relacionados
 export const ObtenerProductoRelacionados = async (idProducto) => {
@@ -294,27 +261,26 @@ export const ObtenerProductoRelacionados = async (idProducto) => {
   }
 }
 
-
 // Obtener marcas de productos
-export const obtenerMarcas = async () => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarMarcasProductos",
+export async function obtenerMarcas() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SIGNALR_URL}/CTproductos/listarMarcasProductos`,
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      data: {
+      body: JSON.stringify({
         Token: "TOKENSUPERSECRETO",
-      },
-    };
+      }),
+      next: { revalidate: 300 },
+    }
+  );
 
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+  if (!res.ok) throw new Error("Error al obtener marcas");
+
+  return res.json();
+}
 
 // Traer mensaje Wsp
 export const obtenerMensajesWsp = async () => {
@@ -358,233 +324,7 @@ export const obtenerUnidades = async () => {
   }
 };
 
-// Editar mensajes Wsp
-export const editarMensajeWsp = async (mensajeProducto, mensajeGlobal) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/CambiarMensajewsp",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        MensajeProducto: mensajeProducto,
-        MensajeGlobal: mensajeGlobal,
-      },
-      withCredentials: true
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Login
-export const Login = async (usuario, clave) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTusuario/BuscarUsuario",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        UsuarioNombre: usuario,
-        Clave: clave,
-      },
-      withCredentials: true 
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    console.error("Error al iniciar sesión:", error);
-    throw error;
-  }
-}
-
-//logout
-export const logout = async () => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTusuario/logout",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {},
-      withCredentials: true 
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    console.error("Error al cerrar sesión:", error);
-    throw error;
-  }
-};
-
-//Verificar sesión
-export const verificarSesion = async () => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTusuario/perfil",
-      method: "GET",
-      withCredentials: true
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    if (error.response?.status === 401) {
-      return null; // Sesión no válida
-    }
-
-    console.error("Error al verificar sesión:", error);
-    throw error;
-  }
-};
-
-// Editar producto
-export const editarProducto = async (idProducto, cambios) => {
-  try {
-    const formData = new FormData();
-
-    formData.append("Token", "TOKENSUPERSECRETO");
-    formData.append("Id_producto", idProducto);
-
-    // 🔁 Agrega dinámicamente los campos modificados
-    for (const key in cambios) {
-      const valor = cambios[key];
-
-      if (key === "archivoFicha" && valor instanceof File) {
-        formData.append("ArchivoFicha", valor);
-      } else if (key === "imagenes") {
-        formData.append("Imagenes", JSON.stringify(valor));
-      }
-      else if (key.startsWith("imagenArchivo_") && valor instanceof Blob) {
-        formData.append(key, valor, key + ".webp");
-      }
-      else if (["categoria", "unidad", "imageneseliminadas"].includes(key.toLowerCase())) {
-        formData.append(capitalizarPrimeraLetra(key), JSON.stringify(valor));
-      } else {
-        formData.append(capitalizarPrimeraLetra(key), valor);
-      }
-    }
-
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/editarProducto",
-      method: "POST",
-      data: formData,
-      withCredentials: true,
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const capitalizarPrimeraLetra = (texto) => {
-  return texto.charAt(0).toUpperCase() + texto.slice(1);
-};
-
-export const EliminarProducto = async (idProducto) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/eliminarProducto",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        Id_producto: idProducto,
-      },
-      withCredentials: true,
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export const EliminarCategoria = async (id_categoria, imagen_categoria) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EliminarCategoria",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        Id_categoria: id_categoria.toString(),
-        Imagen_categoria: imagen_categoria
-      },
-      withCredentials: true,
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const EliminarMarca = async (id_marca, imagen_marca) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EliminarMarca",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        Id_marcas: id_marca.toString(),
-        Imagen_marca: imagen_marca
-      },
-      withCredentials: true,
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const EliminarUnidad = async (id_unidad) =>{
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EliminarUnidadMedida",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        Id_unidad: id_unidad
-      },
-      withCredentials: true,
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-
+{/* Apis de creación/registro */ }
 
 // Crear producto
 export const crearProducto = async (datosProducto) => {
@@ -599,7 +339,9 @@ export const crearProducto = async (datosProducto) => {
       if (key === "archivoFicha" && valor instanceof File) {
         formData.append("ArchivoFicha", valor);
       } else if (key === "imagenes") {
-        const imagenesFiltradas = valor.filter(img => img.urlImagen && img.urlImagen.trim() !== "");
+        const imagenesFiltradas = valor.filter(img =>
+          img.urlImagen?.trim() !== "" || img.NombreArchivo?.trim() !== ""
+        );
         formData.append("Imagenes", JSON.stringify(imagenesFiltradas));
       } else if (key.startsWith("imagenArchivo_") && valor instanceof Blob) {
         formData.append(key, valor, key + ".webp");
@@ -716,10 +458,112 @@ export const crearUnidadMedida = async (datosUnidad) => {
   }
 };
 
+// Crear producto
+export const registrarProducto = async (producto) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/guardarCrearProducto", // Reemplaza con el endpoint correcto si es distinto
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+        Codigo: producto.codigo,
+        Nombre: producto.nombre,
+        Descripcion: producto.descripcion,
+        Precio: parseFloat(producto.precio),
+        Descuento: parseFloat(producto.descuento),
+        Stock: parseFloat(producto.stock),
+        NombreSlug: "",
+        UrlImagen1: producto.urlImagen1,
+        UrlImagen2: producto.urlImagen2,
+        Marca: producto.marca,
+        Categoria: producto.categoria,
+        MensajeConsulta: "",
+        ValorConsulta: "",
+      },
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+{/* Apis de edicion/modificación */ }
+
+// Editar mensajes Wsp
+export const editarMensajeWsp = async (mensajeProducto, mensajeGlobal, Numero) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/CambiarMensajewsp",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+        MensajeProducto: mensajeProducto,
+        MensajeGlobal: mensajeGlobal,
+        Numero: Numero,
+      },
+      withCredentials: true
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Editar producto
+export const editarProducto = async (idProducto, cambios) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("Token", "TOKENSUPERSECRETO");
+    formData.append("Id_producto", idProducto);
+
+    // 🔁 Agrega dinámicamente los campos modificados
+    for (const key in cambios) {
+      const valor = cambios[key];
+
+      if (key === "archivoFicha" && valor instanceof File) {
+        formData.append("ArchivoFicha", valor);
+      } else if (key === "imagenes") {
+        formData.append("Imagenes", JSON.stringify(valor));
+      }
+      else if (key.startsWith("imagenArchivo_") && valor instanceof Blob) {
+        formData.append(key, valor, key + ".webp");
+      }
+      else if (["categoria", "unidad", "imageneseliminadas"].includes(key.toLowerCase())) {
+        formData.append(capitalizarPrimeraLetra(key), JSON.stringify(valor));
+      } else {
+        formData.append(capitalizarPrimeraLetra(key), valor);
+      }
+    }
+
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/editarProducto",
+      method: "POST",
+      data: formData,
+      withCredentials: true,
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Editar Categoria
-export const editarCategoria = async (formData) =>{
-  try{
-    const config ={
+export const editarCategoria = async (formData) => {
+  try {
+    const config = {
       url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EditarCategoria",
       method: "POST",
       data: formData,
@@ -728,16 +572,15 @@ export const editarCategoria = async (formData) =>{
 
     const response = await axios(config);
     return response.data;
-  }catch(error){
+  } catch (error) {
     throw error;
   }
 };
 
-
 // Editar Categoria
-export const editarMarca = async (formData) =>{
-  try{
-    const config ={
+export const editarMarca = async (formData) => {
+  try {
+    const config = {
       url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EditarMarca",
       method: "POST",
       data: formData,
@@ -746,7 +589,7 @@ export const editarMarca = async (formData) =>{
 
     const response = await axios(config);
     return response.data;
-  }catch(error){
+  } catch (error) {
     throw error;
   }
 };
@@ -762,3 +605,170 @@ export const editarUnidadMedida = async (data) => {
   const response = await axios(config);
   return response.data;
 };
+
+const capitalizarPrimeraLetra = (texto) => {
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+};
+
+{/* Apis de eliminación */ }
+
+export const EliminarProducto = async (idProducto) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/eliminarProducto",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+        Id_producto: idProducto,
+      },
+      withCredentials: true,
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const EliminarCategoria = async (id_categoria, imagen_categoria) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EliminarCategoria",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+        Id_categoria: id_categoria.toString(),
+        Imagen_categoria: imagen_categoria
+      },
+      withCredentials: true,
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const EliminarMarca = async (id_marca, imagen_marca) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EliminarMarca",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+        Id_marcas: id_marca.toString(),
+        Imagen_marca: imagen_marca
+      },
+      withCredentials: true,
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const EliminarUnidad = async (id_unidad) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/EliminarUnidadMedida",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+        Id_unidad: id_unidad
+      },
+      withCredentials: true,
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+{/* Apis relacionados al usuario */ }
+
+// Login
+export const Login = async (usuario, clave) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTusuario/BuscarUsuario",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: "TOKENSUPERSECRETO",
+        UsuarioNombre: usuario,
+        Clave: clave,
+      },
+      withCredentials: true
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    throw error;
+  }
+}
+
+//logout
+export const logout = async () => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTusuario/logout",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {},
+      withCredentials: true
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    throw error;
+  }
+};
+
+//Verificar sesión
+export const verificarSesion = async () => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTusuario/perfil",
+      method: "GET",
+      withCredentials: true
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    if (error.response?.status === 401) {
+      return null;
+    }
+
+    console.error("Error al verificar sesión:", error);
+    throw error;
+  }
+};
+
+

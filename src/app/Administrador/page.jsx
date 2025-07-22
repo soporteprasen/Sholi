@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/sidebar";
 
 import SidebarAdmin from "@/components/Administrador/Sidebar-Admin";
+import { LogOut } from "lucide-react";
+import { logout } from "@/lib/api";
 
 import { ShieldCheck } from "lucide-react";
 
@@ -29,8 +31,17 @@ export default function AdminPage() {
   );
 }
 
-// ✅ Componentes hijos separados para usar `useSidebar()` dentro del Provider
+//Componentes hijos separados para usar `useSidebar()` dentro del Provider
 function ContenidoAdministrador({ opcionSeleccionada, setOpcionSeleccionada }) {
+  const handleLogout = () => {
+    logout()
+      .then(() => {
+        window.location.href = "/Sesion";
+      })
+      .catch((error) => {
+        alert("Error al cerrar sesión:", error);
+      });
+  };
 
   const renderContenido = () => {
     switch (opcionSeleccionada) {
@@ -46,7 +57,7 @@ function ContenidoAdministrador({ opcionSeleccionada, setOpcionSeleccionada }) {
         return <AdministrarWsp />;
       default:
         return (
-          <div className="h-full w-full max-w-3xl mx-auto flex flex-col items-center justify-center text-center px-4 py-10 bg-gray-50 rounded-lg shadow-inner">
+          <div className="h-full w-full max-w-3xl mx-auto flex flex-col items-center justify-center text-center px-4 py-10 bg-gray-50 shadow-inner">
             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 mb-4">
               <ShieldCheck className="w-8 h-8" aria-hidden="true" />
             </div>
@@ -65,8 +76,27 @@ function ContenidoAdministrador({ opcionSeleccionada, setOpcionSeleccionada }) {
     <div className="flex min-h-screen w-full">
       <SidebarAdmin onSelectOption={setOpcionSeleccionada}/>
       <main className="flex-1 w-full">
-        <div className="md:hidden">
+        {/* Barra superior solo visible en móviles */}
+        <div className="md:hidden flex justify-between items-center p-2">
           <SidebarTrigger />
+          <button
+            className="flex items-center gap-2 px-3 py-2 text-red-500 hover:bg-red-50 rounded"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Cerrar sesión</span>
+          </button>
+        </div>
+
+        {/* Botón logout para escritorio */}
+        <div className="hidden md:flex justify-end p-2">
+          <button
+            className="flex items-center gap-2 px-3 py-2 text-red-500 hover:bg-red-50 rounded"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Cerrar sesión</span>
+          </button>
         </div>
         {renderContenido()}
       </main>

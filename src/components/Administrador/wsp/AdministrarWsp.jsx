@@ -6,20 +6,29 @@ import BotonWsp from "@/components/BotonWsp";
 
 export default function AdministrarWsp() {
   const [MensajeProducto, setMensajeProducto] = useState("");
-  const [MensajeGlobal, setMensajeGlobal] = useState(""); // Opcional
+  const [MensajeGlobal, setMensajeGlobal] = useState("");
   const [Numero, setNumero] = useState("");
   const [mensajeStatus, setMensajeStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [valoresOriginales, setValoresOriginales] = useState({
+    mensajeProducto: "",
+    mensajeGlobal: "",
+    numero: "",
+  });
 
   useEffect(() => {
     const fetchMensajes = async () => {
       try {
         const data = await obtenerMensajesWsp();
-        console.log("Datos obtenidos:", data);
         if (data) {
-          setMensajeProducto(data.mensajeProducto );
+          setMensajeProducto(data.mensajeProducto);
           setMensajeGlobal(data.mensajeGlobal);
-          setNumero(data.numero );
+          setNumero(data.numero);
+          setValoresOriginales({
+          mensajeProducto: data.mensajeProducto,
+          mensajeGlobal: data.mensajeGlobal,
+          numero: data.numero,
+        });
         }
       } catch (error) {
         alert("Error al obtener mensajes:", error);
@@ -27,10 +36,17 @@ export default function AdministrarWsp() {
     };
 
     fetchMensajes();
-  });
+  }, []);
 
-  const PrevisualizacionP = `${MensajeProducto}\n\n*Código: XXXXXXXXXX Producto: XXXXXXXX Link: https://sholi.com/producto/XXXXXXXXXX*`
-  const PrevisualizacionG = `${MensajeGlobal}\n\n*Código: Producto: Link: *`
+  const restaurarMensajeProducto = () => setMensajeProducto(valoresOriginales.mensajeProducto);
+  const restaurarMensajeGlobal = () => setMensajeGlobal(valoresOriginales.mensajeGlobal);
+  const restaurarNumero = () => setNumero(valoresOriginales.numero);
+
+  const restaurarTodo = () => {
+    setMensajeProducto(valoresOriginales.mensajeProducto);
+    setMensajeGlobal(valoresOriginales.mensajeGlobal);
+    setNumero(valoresOriginales.numero);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,13 +54,17 @@ export default function AdministrarWsp() {
     setLoading(true);
 
     try {
-      await editarMensajeWsp(
+      const cambio = await editarMensajeWsp(
         MensajeProducto || null,
-        MensajeGlobal || null
+        MensajeGlobal || null,
+        Numero || null,
       );
-      setMensajeStatus("¡Mensaje actualizado con éxito!");
-      setMensajeProducto("");
-      setMensajeGlobal("");
+
+      if (cambio.valorConsulta == 1) {
+        setMensajeStatus(cambio.mensajeConsulta);
+      } else {
+        setMensajeStatus(cambio.mensajeConsulta);
+      }
     } catch (error) {
       setMensajeStatus("Error al actualizar el mensaje.");
     } finally {
@@ -53,101 +73,150 @@ export default function AdministrarWsp() {
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md"
-      >
-        <h2 className="text-2xl font-bold mb-4">Actualizar Informacion relacionada a Whatsap</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="w-[95%] max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-lg space-y-6 border border-gray-200"
+    >
+      <h2 className="text-3xl font-extrabold text-center mb-2">
+        Gestión de WhatsApp
+      </h2>
+      <p className="text-center text-gray-600 mb-6">
+        Aquí puedes actualizar el número, mensajes base y flotantes de contacto por WhatsApp.
+      </p>
 
-        {/* Numero de whatssap */}
-        <div className="mb-4">
-          <label
-            htmlFor="Numero"
-            className="block text-gray-700 font-semibold mb-2"
+      {/* Número de WhatsApp */}
+      <div className="space-y-2">
+        <label htmlFor="Numero" className="text-lg font-medium text-gray-700 flex justify-between">
+          Número de WhatsApp:
+          <button
+            type="button"
+            onClick={restaurarNumero}
+            className="text-sm text-blue-600 underline hover:text-blue-800"
           >
-            Número de WhatsApp:
-          </label>
-          <input
-            id="Numero"
-            type="text"
-            value={Numero}
-            onChange={(e) => setNumero(e.target.value)}
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Ingrese el número de WhatsApp"
-          />
+            Restaurar número original
+          </button>
+        </label>
+        <input
+          id="Numero"
+          type="text"
+          value={Numero}
+          onChange={(e) => setNumero(e.target.value)}
+          className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Ingrese el número de WhatsApp"
+        />
+      </div>
+
+      {/* Botones de ejemplo */}
+      <div className="space-y-2">
+        <label className="text-lg font-medium text-gray-700">
+          Enlaces directos a WhatsApp desde un producto:
+        </label>
+        <div className="flex gap-4 items-center">
+          <div className="flex-1 text-center">
+            <BotonWsp tipo="tienda" />
+          </div>
+          <div className="flex-1 text-center">
+            <BotonWsp tipo="producto" />
+          </div>
         </div>
+      </div>
 
-        {/* Campo opcional: MensajeProducto */}
-        <label
-            htmlFor="Numero"
-            className="block text-gray-700 font-semibold mb-2"
+      {/* Mensaje base producto */}
+      <div className="space-y-2">
+        <label htmlFor="MensajeProducto" className="text-lg font-medium text-gray-700 flex justify-between">
+          Mensaje base para productos:
+          <button
+            type="button"
+            onClick={restaurarMensajeProducto}
+            className="text-sm text-blue-600 underline hover:text-blue-800"
           >
-            Enlaces directos a WhatsApp desde un producto:
-          </label>
-        <BotonWsp tipo="tienda"/><BotonWsp tipo="producto"/>
-
-        <label
-            htmlFor="Numero"
-            className="block text-gray-700 font-semibold mb-2"
-          >
-            Mensaje:
+            Restaurar original
+          </button>
         </label>
         <textarea
           id="MensajeProducto"
           value={MensajeProducto}
-          onChange={(e) => setMensajeGlobal(e.target.value)}
+          onChange={(e) => setMensajeProducto(e.target.value)}
           rows="4"
           className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+      </div>
 
-        <label
-            htmlFor="Numero"
-            className="block text-gray-700 font-semibold mb-2"
-          >
-            Previsualizacion del texto a enviar:
+      {/* Previsualización del mensaje */}
+      <div className="space-y-2">
+        <label htmlFor="PreviewProducto" className="text-lg font-medium text-gray-700">
+          Previsualización del mensaje con código y link:
         </label>
         <textarea
-          id="MensajeProducto"
-          value={PrevisualizacionP}
+          id="PreviewProducto"
+          value={`${MensajeProducto}\n\n*Código: XXXXXXXXXX Producto: XXXXXXXX Link: https://sholi.com/producto/XXXXXXXXXX*`}
+          disabled
+          rows="4"
+          className="w-full p-3 border rounded-md bg-gray-100 text-gray-800"
+        />
+      </div>
+
+      {/* Mensaje flotante global */}
+      <div className="space-y-2">
+        <label htmlFor="MensajeGlobal" className="text-lg font-medium text-gray-700 flex justify-between">
+          Mensaje del logo flotante:
+          <button
+            type="button"
+            onClick={restaurarMensajeGlobal}
+            className="text-sm text-blue-600 underline hover:text-blue-800"
+          >
+            Restaurar original
+          </button>
+        </label>
+        <textarea
+          id="MensajeGlobal"
+          value={MensajeGlobal}
           onChange={(e) => setMensajeGlobal(e.target.value)}
           rows="4"
-          className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
         />
+      </div>
 
-        {/* Campo opcional: MensajeGlobal */}
-        <div className="mb-4">
-          <label
-            htmlFor="MensajeGlobal"
-            className="block text-gray-700 font-semibold mb-2"
-          >
-            Logo de Whatsap flotante:
-          </label>
-          <textarea
-            id="MensajeGlobal"
-            value={MensajeGlobal}
-            onChange={(e) => setMensajeGlobal(e.target.value)}
-            rows="4"
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+      {/* Previsualización global */}
+      <div className="space-y-2">
+        <label htmlFor="PreviewGlobal" className="text-lg font-medium text-gray-700">
+          Previsualización flotante:
+        </label>
+        <textarea
+          id="PreviewGlobal"
+          value={MensajeGlobal}
+          disabled
+          rows="4"
+          className="w-full p-3 border rounded-md bg-gray-100 text-gray-800"
+        />
+      </div>
 
+      {/* Botones de acción */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mt-6">
         <button
           type="submit"
           disabled={loading}
-          className={`${
-            loading ? "bg-green-300" : "bg-green-500 hover:bg-green-600"
-          } text-white font-bold py-2 px-6 rounded-md transition-colors`}
+          className={`${loading
+            ? "bg-green-300"
+            : "bg-green-500 hover:bg-green-600"
+            } text-white font-bold py-2 px-6 rounded-md transition-colors`}
         >
           {loading ? "Actualizando..." : "Actualizar Mensaje"}
         </button>
 
-        {mensajeStatus && (
-          <p className="mt-4 text-center font-semibold">
-            {mensajeStatus}
-          </p>
-        )}
-      </form>
-    </>
+        <button
+          type="button"
+          onClick={restaurarTodo}
+          className="text-sm text-blue-600 underline hover:text-blue-800"
+        >
+          Restaurar todo a valores originales
+        </button>
+      </div>
+
+      {/* Estado final */}
+      {mensajeStatus && (
+        <p className="mt-6 text-center font-semibold text-green-600">{mensajeStatus}</p>
+      )}
+    </form>
   );
 }

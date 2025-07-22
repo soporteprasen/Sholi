@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 
 const CuadroDeBanners = ({ contenido }) => {
@@ -8,7 +7,11 @@ const CuadroDeBanners = ({ contenido }) => {
   const imagenesRestantes = contenido.slice(1);
 
   return (
-    <section className="py-12 px-4 bg-white">
+    <section
+      className="py-12 px-4 bg-white"
+      role="region"
+      aria-label="Banners de novedades eléctricas"
+    >
       <h2 className="text-xl md:text-2xl font-semibold text-blue-900 mb-10 text-center">
         Novedades en materiales y productos eléctricos
       </h2>
@@ -21,7 +24,7 @@ const CuadroDeBanners = ({ contenido }) => {
             alt={imagenGrande.nombre}
             width={1200}
             height={350}
-            className="w-full h-auto object-cover"
+            className="object-cover"
             loading="lazy"
           />
         </div>
@@ -31,7 +34,7 @@ const CuadroDeBanners = ({ contenido }) => {
             alt={imagenesRestantes[0].nombre}
             width={600}
             height={350}
-            className="w-full h-auto object-cover"
+            className="object-cover"
             loading="lazy"
           />
         </div>
@@ -43,16 +46,15 @@ const CuadroDeBanners = ({ contenido }) => {
           {imagenesRestantes.slice(1).map((item, idx) => (
             <div
               key={idx}
-              className="flex-shrink-0 snap-start rounded-xl overflow-hidden"
-              style={{ minWidth: "290px", maxWidth: "290px" }}
+              className="flex-shrink-0 snap-start rounded-xl overflow-hidden relative"
+              style={{ width: "290px", height: "126px" }}
             >
               <Image
                 src={item.imagen}
                 alt={item.nombre}
-                width={290}
-                height={126}
+                fill
+                className="object-cover"
                 sizes="(max-width:768px) 290px"
-                className="w-full h-auto object-cover"
                 loading="lazy"
               />
             </div>
@@ -72,7 +74,7 @@ const CuadroDeBanners = ({ contenido }) => {
               alt={item.nombre || `Banner ${idx + 1}`}
               width={580}
               height={320}
-              className="w-full h-auto object-cover"
+              className="object-cover"
               loading="lazy"
             />
           </div>

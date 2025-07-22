@@ -1,20 +1,37 @@
-'use client';
-
-import { useAltura } from './AlturaContext';
-import { useEffect, useState } from 'react';
 import { BookOpen } from 'lucide-react';
 
 export default function Footer() {
-  const { alturaFooter } = useAltura();
-  const [margenInferior, setMargenInferior] = useState(0);
-
-  useEffect(() => {
-    setMargenInferior(alturaFooter);
-  }, [alturaFooter]);
-
+  const fechaActual = new Date();
+  const añoActual = fechaActual.getFullYear();
   return (
     <footer role="contentinfo" className="bg-gray-50 text-sm text-gray-700 border-t">
-      <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Prasen",
+            "url": "https://prasen.pe",
+            "logo": "https://prasen.pe/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+51-1-9999999",
+              "contactType": "Customer Support",
+              "areaServed": "PE",
+              "availableLanguage": "Spanish"
+            },
+            "sameAs": [
+              "https://www.facebook.com/tuPagina",
+              "https://www.instagram.com/tuPerfil",
+              "https://www.linkedin.com/company/tuEmpresa",
+              "https://www.youtube.com/tuCanal",
+              "https://www.tiktok.com/@tuUsuario"
+            ]
+          }),
+        }}
+      />
+      <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* CENTRALES */}
         <div>
           <h3 className="font-bold text-xs text-gray-500 mb-2">CENTRALES</h3>
@@ -80,33 +97,13 @@ export default function Footer() {
             </button>
           </div>
         </div>
-
-        {/* NEWSLETTER */}
-        <div>
-          <h3 className="font-bold text-xs text-gray-500 mb-2">MANTENTE ACTUALIZADO</h3>
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full px-3 py-2 border rounded mb-2"
-            aria-label="Correo electrónico"
-          />
-          <button className="bg-[#d7e600] text-sm px-4 py-2 rounded text-black font-semibold">
-            ENVIAR
-          </button>
-          <div className="mt-2 text-xs">
-            <label htmlFor="terms">
-              <input id="terms" type="checkbox" className="mr-2" />
-              He leído y acepto los términos de la web
-            </label>
-          </div>
-        </div>
       </div>
 
       {/* PIE DE PÁGINA */}
       <div className="bg-white text-center text-xs py-6 border-t">
-        <p className="mb-2">©2023 Prasen. Todos los derechos reservados</p>
+        <p className="mb-2">©{añoActual} Prasen. Todos los derechos reservados</p>
         <p>
-          Desarrollado por <a href="#" className="text-blue-700 font-medium">PRASEN</a>. 
+          {/* Desarrollado por <a href="" className="text-blue-700 font-medium">PRASEN</a>.  */}
           Diseño por <a href="#" className="text-blue-700 font-medium">Danfer</a>.
         </p>
       </div>

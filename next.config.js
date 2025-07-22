@@ -5,10 +5,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: '192.168.0.113',
-        port: '5681', // si estás usando un puerto específico
-        pathname: '/**', // para aceptar todas las rutas
+        protocol: 'https',
+        hostname: 'sholiserver-djeya2geetgxbqde.westus-01.azurewebsites.net',
+        pathname: '/**',
       },
     ],
   },

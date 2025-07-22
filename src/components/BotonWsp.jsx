@@ -6,6 +6,7 @@ import { MessageCircleMore } from "lucide-react";
 
 export default function BotonWsp({ tipo = "inicio", codigo = "", nombre = "", slugCategoria = "", nombreSlug = "" }) {
   const [mensajeBase, setMensajeBase] = useState("");
+  const [numero, setNumero] = useState("")
 
   useEffect(() => {
     const fetchMensaje = async () => {
@@ -13,6 +14,7 @@ export default function BotonWsp({ tipo = "inicio", codigo = "", nombre = "", sl
         const data = await obtenerMensajesWsp();
         if (data && data.mensajeProducto) {
           setMensajeBase(data.mensajeProducto);
+          setNumero(data.numero);
         } else {
           setMensajeBase("¡Hola! Estoy interesado en un producto.");
         }
@@ -37,12 +39,12 @@ export default function BotonWsp({ tipo = "inicio", codigo = "", nombre = "", sl
     : "";
 
   const urlWhatsApp = mensajeFinal
-    ? `https://api.whatsapp.com/send/?phone=51903021399&text=${encodeURIComponent(mensajeFinal)}`
+    ? `https://api.whatsapp.com/send/?phone=51${numero}&text=${encodeURIComponent(mensajeFinal)}`
     : "#";
 
   const clases = tipo === "producto"
   ? "inline-flex items-center justify-center px-6 py-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-md text-lg transition-colors"
-  : "flex items-center justify-center gap-1 px-2 py-1 text-xs sm:text-sm text-green-600 hover:bg-green-50 transition w-full";
+  : "flex items-center justify-center gap-1 px-2 py-1 text-xs sm:text-sm text-green-600 hover:bg-green-50 transition w-auto";
 
   return (
     <a
