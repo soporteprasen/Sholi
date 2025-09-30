@@ -1,7 +1,5 @@
 import axios from "axios";
 
-{/* Apis de listados/Obtencion */ }
-
 // Obtener productos Principales
 export const obtenerProductos = async () => {
   try {
@@ -12,7 +10,7 @@ export const obtenerProductos = async () => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: 'TOKENSUPERSECRETO',
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Vista: ""
       }
     }
@@ -33,7 +31,7 @@ export const obtenerProductosConDescuento = async () => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
       }
     }
     const response = await axios(config);
@@ -53,7 +51,7 @@ export const obtenerProductosAdmin = async () => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: 'TOKENSUPERSECRETO',
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
       }
     }
     const response = await axios(config);
@@ -73,7 +71,7 @@ export const obtenerProductosFiltrados = async (id_marca, id_categoria, orden, o
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Id_marca: id_marca,
         Id_categoria: id_categoria,
         Orden: orden,
@@ -99,7 +97,7 @@ export const obtenerCoincidenciasBuscador = async (contenido, desde, cantidad, o
         "Content-Type": "application/json",
       },
       data: {
-        token: "TOKENSUPERSECRETO",
+        token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         contenido: contenido,
         desde: desde,
         cantidad: cantidad,
@@ -126,7 +124,7 @@ export const obtenerProductoPorId = async (idProducto) => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Id_producto: idProducto,
       },
       withCredentials: true
@@ -149,7 +147,7 @@ export const obtenerProductoPorSlug = async (slug) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         NombreSlug: slug,
       }),
       next: {
@@ -162,28 +160,6 @@ export const obtenerProductoPorSlug = async (slug) => {
 
   return res.json();
 };
-
-// Recorrer imagenes por url de la carpeta
-export const RecorrerCarpetaImagenes = async (UrlCarpeta) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/ListarImagenes",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        UrlImagen: UrlCarpeta,
-      },
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
 
 //traer imagen
 export const ObtenerImagenProducto = async (urlRelativa) => {
@@ -209,13 +185,34 @@ export const ObtenerArchivoFicha = async (urlRelativa) => {
     const response = await axios({
       url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/archivoFicha/" + urlRelativa,
       method: "GET",
-      responseType: "blob", // 👈 para recibir como archivo
+      responseType: "blob",
     });
 
     return response.data; // Devuelve el blob de PDF
   } catch (error) {
     throw error;
   }
+};
+
+//Obtener lista de productos para el administrador
+export const ObtenerProductos = async () => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SIGNALR_URL}/CTproductos/listarProductos`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
+      }),
+      next: { revalidate: 60 },
+    }
+  );
+
+  if (!res.ok) throw new Error("Error al obtener categorías");
+
+  return res.json();
 };
 
 // Obtener categorías de productos
@@ -228,37 +225,15 @@ export async function obtenerCategorias() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
       }),
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     }
   );
 
   if (!res.ok) throw new Error("Error al obtener categorías");
 
   return res.json();
-}
-
-// Obtener Producto relacionados
-export const ObtenerProductoRelacionados = async (idProducto) => {
-  try {
-    const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/BuscarProductoRelacionados",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        Token: "TOKENSUPERSECRETO",
-        Id_producto: idProducto
-      },
-    };
-
-    const response = await axios(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
 }
 
 // Obtener marcas de productos
@@ -271,9 +246,9 @@ export async function obtenerMarcas() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
       }),
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     }
   );
 
@@ -282,17 +257,38 @@ export async function obtenerMarcas() {
   return res.json();
 }
 
-// Traer mensaje Wsp
-export const obtenerMensajesWsp = async () => {
+// Obtener categorías de productos (sin caché)
+export const obtenerCategoriasAxios = async () => {
   try {
     const config = {
-      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/TraerMensajeWsp",
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarCategoriasProductos",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
+      },
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Obtener marcas de productos (sin caché)
+export const obtenerMarcasAxios = async () => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/listarMarcasProductos",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
       },
     };
 
@@ -313,7 +309,7 @@ export const obtenerUnidades = async () => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
       },
     };
 
@@ -324,6 +320,49 @@ export const obtenerUnidades = async () => {
   }
 };
 
+// Obtener Producto relacionados
+export const ObtenerProductoRelacionados = async (idProducto) => {
+  try {
+    const config = {
+      url: process.env.NEXT_PUBLIC_SIGNALR_URL + "/CTproductos/BuscarProductoRelacionados",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
+        Id_producto: idProducto
+      },
+    };
+
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Obtener marcas de productos
+export async function obtenerMensajesWsp() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SIGNALR_URL}/CTproductos/TraerMensajeWsp`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
+      }),
+      next: { revalidate: 60 },
+    }
+  );
+
+  if (!res.ok) throw new Error("Error al obtener marcas");
+
+  return res.json();
+}
+
 {/* Apis de creación/registro */ }
 
 // Crear producto
@@ -331,7 +370,7 @@ export const crearProducto = async (datosProducto) => {
   try {
     const formData = new FormData();
 
-    formData.append("Token", "TOKENSUPERSECRETO");
+    formData.append("Token", process.env.NEXT_PUBLIC_TOKEN_SECRET);
 
     for (const key in datosProducto) {
       const valor = datosProducto[key];
@@ -371,7 +410,7 @@ export const crearMarca = async (datosMarca) => {
   try {
     const formData = new FormData();
 
-    formData.append("Token", "TOKENSUPERSECRETO");
+    formData.append("Token", process.env.NEXT_PUBLIC_TOKEN_SECRET);
 
     for (const key in datosMarca) {
       const valor = datosMarca[key];
@@ -405,7 +444,7 @@ export const crearCategoria = async (datosCategoria) => {
   try {
     const formData = new FormData();
 
-    formData.append("Token", "TOKENSUPERSECRETO");
+    formData.append("Token", process.env.NEXT_PUBLIC_TOKEN_SECRET);
 
     for (const key in datosCategoria) {
       const valor = datosCategoria[key];
@@ -442,7 +481,7 @@ export const crearUnidadMedida = async (datosUnidad) => {
       method: "POST",
       data: {
         ...datosUnidad,
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
       },
       headers: {
         "Content-Type": "application/json",
@@ -468,7 +507,7 @@ export const registrarProducto = async (producto) => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Codigo: producto.codigo,
         Nombre: producto.nombre,
         Descripcion: producto.descripcion,
@@ -504,7 +543,7 @@ export const editarMensajeWsp = async (mensajeProducto, mensajeGlobal, Numero) =
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         MensajeProducto: mensajeProducto,
         MensajeGlobal: mensajeGlobal,
         Numero: Numero,
@@ -524,7 +563,7 @@ export const editarProducto = async (idProducto, cambios) => {
   try {
     const formData = new FormData();
 
-    formData.append("Token", "TOKENSUPERSECRETO");
+    formData.append("Token", process.env.NEXT_PUBLIC_TOKEN_SECRET);
     formData.append("Id_producto", idProducto);
 
     // 🔁 Agrega dinámicamente los campos modificados
@@ -621,7 +660,7 @@ export const EliminarProducto = async (idProducto) => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Id_producto: idProducto,
       },
       withCredentials: true,
@@ -643,7 +682,7 @@ export const EliminarCategoria = async (id_categoria, imagen_categoria) => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Id_categoria: id_categoria.toString(),
         Imagen_categoria: imagen_categoria
       },
@@ -666,7 +705,7 @@ export const EliminarMarca = async (id_marca, imagen_marca) => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Id_marcas: id_marca.toString(),
         Imagen_marca: imagen_marca
       },
@@ -689,7 +728,7 @@ export const EliminarUnidad = async (id_unidad) => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         Id_unidad: id_unidad
       },
       withCredentials: true,
@@ -714,7 +753,7 @@ export const Login = async (usuario, clave) => {
         "Content-Type": "application/json",
       },
       data: {
-        Token: "TOKENSUPERSECRETO",
+        Token: process.env.NEXT_PUBLIC_TOKEN_SECRET,
         UsuarioNombre: usuario,
         Clave: clave,
       },

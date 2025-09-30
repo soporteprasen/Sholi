@@ -1,14 +1,13 @@
-// app/producto/[...slug]/page.jsx
+// app/Producto/[...slug]/page.jsx
 import { obtenerProductoPorSlug } from "@/lib/api";
 import Script from "next/script";
-import ImagenProductoJS from "@/components/ImagenProductoJs";
+import ImagenProductoJS from "@/components/PaginaProducto/ImagenProductoJs";
 import { notFound } from "next/navigation";
-import { PackageCheck, ShoppingCart } from "lucide-react";
+import { PackageCheck } from "lucide-react";
 import BotonWsp from "@/components/BotonWsp";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import ProductosRelacionados from "@/components/ProductosRelacionados";
+import Breadcrumbs from "@/components/PaginaProducto/Breadcrumbs";
+import ProductosRelacionados from "@/components/PaginaProducto/ProductosRelacionados";
 import Link from "next/link";
-import Image from "next/image";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -16,7 +15,7 @@ export async function generateMetadata({ params }) {
     ? resolvedParams.slug
     : [resolvedParams?.slug].filter(Boolean);
   const slugCompleto = slugArray.join("/");
-  
+
   try {
     const producto = await obtenerProductoPorSlug(slugCompleto);
     if (!producto) return notFound();
@@ -50,7 +49,7 @@ export async function generateMetadata({ params }) {
         ]
       },
       alternates: {
-        canonical: `https://prasen.pe/producto/${slugCompleto}`,
+        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/producto/${slugCompleto}`,
       }
     };
   } catch (error) {
@@ -62,6 +61,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
+  const getVariant = (url, size) =>
+    url.replace("/original/", `/${size}/`);
+  
   const resolvedParams = await params;
   const slugArray = Array.isArray(resolvedParams?.slug)
     ? resolvedParams.slug
@@ -105,6 +107,7 @@ export default async function Page({ params }) {
   const imagenActiva = imagenes.find(i => i.principalTipo === 1)?.imagenUrlTemporal ||
     imagenes.find(i => i.principalTipo === 2)?.imagenUrlTemporal ||
     imagenes[0]?.imagenUrlTemporal || "/not-found.webp";
+    
   return (
     <main className="bg-white" itemScope itemType="https://schema.org/Product">
       {/* Breadcrumb */}
@@ -112,7 +115,7 @@ export default async function Page({ params }) {
         <div className="border-y border-gray-200 py-3">
           <Breadcrumbs items={[
             { label: "Inicio", href: "/" },
-            { label: "Categoría", href: `/categoria` },
+            { label: "marca", href: `/tienda/${producto.slug_marca}` },
             { label: producto.nombre }
           ]} />
           <Script id="breadcrumbs-jsonld" type="application/ld+json">
@@ -124,19 +127,19 @@ export default async function Page({ params }) {
                   "@type": "ListItem",
                   position: 1,
                   name: "Inicio",
-                  item: "https://prasen.pe/",
+                  item: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
-                  name: "Categoría",
-                  item: "https://prasen.pe/categoria",
+                  name: "Marca",
+                  item: `${process.env.NEXT_PUBLIC_SITE_URL}/tienda/tienda/${producto.slug_marca}`,
                 },
                 {
                   "@type": "ListItem",
                   position: 3,
                   name: producto.nombre,
-                  item: `https://prasen.pe/producto/${slugCompleto}`,
+                  item: `${process.env.NEXT_PUBLIC_SITE_URL}/producto/${slugCompleto}`,
                 },
               ],
             })}
@@ -152,16 +155,21 @@ export default async function Page({ params }) {
           <div id="producto-carrusel" className="relative md:w-1/2">
             {/* Imagen principal */}
             <div className="relative w-full aspect-square border rounded">
-              <Image
+              <img
                 id="imagen-principal"
-                src={imagenActiva}
+                src={imagenActiva} // siempre la original como fallback
                 alt={`Imagen principal de ${producto.nombre}`}
                 className="w-full h-full object-contain select-none"
                 loading="eager"
                 itemProp="image"
-                width={800}
-                height={800}
-                sizes="(max-width: 768px) 100vw, 50vw"
+                width={550}
+                height={550}
+                fetchPriority="high"
+                srcSet={`
+                  ${getVariant(imagenActiva, "lg")} 366w,
+                  ${imagenActiva} 550w
+                `}
+                sizes="(max-width: 768px) 366px, 550px"
               />
             </div>
             {/* Zoom flotante pegado a la derecha de la imagen */}
@@ -179,9 +187,10 @@ export default async function Page({ params }) {
             <div className="flex flex-wrap gap-4 mt-4">
               {imagenes.map((img, i) => (
                 <img
-                  key={i}
-                  src={img.imagenUrlTemporal}
+                  key={img.imagenUrlTemporal || i} // 👈 clave única
+                  src={getVariant(img.imagenUrlTemporal, "xs")}
                   alt={`Miniatura ${i + 1}`}
+                  srcSet={`${getVariant(img.imagenUrlTemporal, "xs")} 80w`}
                   data-miniatura-src={img.imagenUrlTemporal}
                   className="h-20 w-20 object-contain border rounded cursor-pointer"
                 />
@@ -195,18 +204,18 @@ export default async function Page({ params }) {
           {/* ---------- COLUMNA DERECHA: Información del producto ---------- */}
           <div className="md:w-1/2 space-y-4">
             {producto.codigo && (
-              <span className="italic">
+              <span className="italic text-[#3C1D2A]">
                 Sku: <span className="font-medium text-gray-700">{producto.codigo}</span>
               </span>
             )}
-            <h1 className="text-2xl md:text-3xl font-bold" itemProp="name">
+            <h1 className="text-2xl text-[#3C1D2A] md:text-3xl font-bold" itemProp="name">
               {producto.nombre}
             </h1>
             {producto.marca && (
               <Link
                 href={`/tienda/${producto.slug_marca}`}
               >
-                <p className="text-sm text-gray-500 italic">
+                <p className="text-sm text-[#3C1D2A] italic">
                   Marca: <span className="font-medium text-gray-700">{producto.marca}</span>
                 </p>
               </Link>
@@ -216,45 +225,45 @@ export default async function Page({ params }) {
             </p>
 
             {/* Precio */}
-            {producto.precio &&(
-                <>
-                  <div
-                    className="flex items-center gap-4 text-2xl font-semibold mt-2 flex-wrap"
-                    itemProp="offers"
-                    itemScope
-                    itemType="https://schema.org/Offer"
-                  >
-                    {producto.descuento > 0 ? (
-                      <>
-                        <span
-                          className="text-green-700 font-bold text-2xl"
-                          itemProp="price"
-                          content={(producto.precio - producto.precio * producto.descuento / 100).toFixed(2)}
-                        >
-                          S/. {(producto.precio - producto.precio * producto.descuento / 100).toFixed(2)}
-                        </span>
-                        <span className="text-gray-400 line-through text-lg">
-                          S/. {producto.precio.toFixed(2)}
-                        </span>
-                        <span className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded font-semibold">
-                          -{producto.descuento}% OFF
-                        </span>
-                      </>
-                    ) : (
+            {producto.precio && (
+              <>
+                <div
+                  className="flex items-center gap-4 text-2xl font-semibold mt-2 flex-wrap"
+                  itemProp="offers"
+                  itemScope
+                  itemType="https://schema.org/Offer"
+                >
+                  {producto.descuento > 0 ? (
+                    <>
                       <span
-                        className="text-gray-800"
+                        className="text-green-700 font-bold text-2xl"
                         itemProp="price"
-                        content={producto.precio.toFixed(2)}
+                        content={(producto.precio - producto.precio * producto.descuento / 100).toFixed(2)}
                       >
+                        S/. {(producto.precio - producto.precio * producto.descuento / 100).toFixed(2)}
+                      </span>
+                      <span className="text-neutral-700 line-through text-lg">
                         S/. {producto.precio.toFixed(2)}
                       </span>
-                    )}
-                    <meta itemProp="priceCurrency" content="PEN" />
-                    <link itemProp="availability" href={`https://schema.org/${producto.stock > 0 ? "InStock" : "OutOfStock"}`} />
-                  </div>
-                </>
-              )}
-            
+                      <span className="bg-red-100 text-red-700 text-sm px-3 py-1 rounded font-semibold">
+                        -{producto.descuento}% OFF
+                      </span>
+                    </>
+                  ) : (
+                    <span
+                      className="text-green-700"
+                      itemProp="price"
+                      content={producto.precio.toFixed(2)}
+                    >
+                      S/. {producto.precio.toFixed(2)}
+                    </span>
+                  )}
+                  <meta itemProp="priceCurrency" content="PEN" />
+                  <link itemProp="availability" href={`https://schema.org/${producto.stock > 0 ? "InStock" : "OutOfStock"}`} />
+                </div>
+              </>
+            )}
+
 
             {/* Stock */}
             <div className="flex items-center gap-2 text-sm text-gray-500 mt-2" itemProp="availability">
@@ -265,19 +274,37 @@ export default async function Page({ params }) {
             </div>
 
             {/* Botones */}
-            <button className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition">
+            {/* <button className="w-full flex items-center justify-center gap-2 bg-[#3C1D2A] text-white py-3 rounded hover:bg-[#7c141b] transition">
               <ShoppingCart className="w-5 h-5" />
               Agregar al carrito
-            </button>
+            </button> */}
 
             {producto.ficha && (
               <a
                 href={producto.ficha}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded hover:bg-green-700 transition mt-4"
+                className="w-full flex items-center justify-center gap-2 bg-[#3C1D2A] text-white py-3 rounded hover:bg-[#7c141b] transition mt-4"
               >
-                📄 Ver Ficha Técnica
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-file-text-icon lucide-file-text"
+                >
+                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                  <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                  <path d="M10 9H8" />
+                  <path d="M16 13H8" />
+                  <path d="M16 17H8" />
+                </svg>
+                Ver Ficha Técnica
               </a>
             )}
 
@@ -302,7 +329,7 @@ export default async function Page({ params }) {
                 },
                 offers: {
                   "@type": "Offer",
-                  url: `https://prasen.pe/producto/${slugCompleto}`,
+                  url: `${process.env.NEXT_PUBLIC_SITE_URL}/producto/${slugCompleto}`,
                   priceCurrency: "PEN",
                   price: (producto.precio - producto.precio * producto.descuento / 100).toFixed(2),
                   availability: `https://schema.org/${producto.stock > 0 ? "InStock" : "OutOfStock"}`,

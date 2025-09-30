@@ -1,14 +1,13 @@
-import { User, ShoppingCart} from "lucide-react"; 
-import Buscador from "./BuscadorDesktop";
 import Image from "next/image";
 import Link from "next/link";
+import BuscadorDesktopIsland from "./BuscadorDesktopIsland";
 
 export default function DbarraPrincipal() {
   return (
     <div className="bg-white shadow-sm py-3">
       <div className="relative max-w-screen-xl mx-auto px-4 grid grid-cols-3 items-center gap-4">
-        {/* Buscador*/}
-        <Buscador/>
+        {/* Buscador diferido */}
+        <BuscadorDesktopIsland />
 
         {/* Logo */}
         <Link
@@ -18,42 +17,35 @@ export default function DbarraPrincipal() {
           title="Inicio Prasen"
         >
           <Image
-            src={"/logo/logo-principal-prasen.webp"}
+            src="/logo/logo-principal-prasen.webp"
             alt="Prasen - Compra online"
-            width={118}
+            width={119}
             height={48}
-            className="h-full max-h-12 w-auto object-contain"
+            className="object-contain"
+            sizes="119px"
           />
         </Link>
 
-        {/* Íconos */}
-        <div className="flex justify-end items-center gap-5 text-gray-600 text-xl">
-          {/* Administrar */}
-          <a href="/Administrador">
-            <User className="w-6 h-6" aria-hidden="true" />
-            <span className="sr-only">Ir al panel de administrador</span>
+        {/* Icono admin inline (evita lucide-react aquí) */}
+        {/* <div className="flex justify-end items-center gap-5 text-gray-600 text-xl">
+          <a href="/Administrador" aria-label="Ir al panel de administrador">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-settings-icon lucide-settings"
+            >
+              <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
           </a>
-
-          {/* Favoritos */}
-          {/* <button
-            title="Favoritos"
-            aria-label="Ver lista de deseos"
-            className="hover:text-red-500 transition"
-          >
-            <Heart className="w-6 h-6" aria-hidden="true" />
-          </button> */}
-
-          {/* Carrito */}
-          {/* <div
-            role="link"
-            title="Carrito de compras"
-            aria-label="Ver carrito de compras"
-            className="flex items-center gap-1 hover:text-indigo-600 transition cursor-pointer"
-          >
-            <ShoppingCart className="w-6 h-6" aria-hidden="true" />
-            <span className="text-sm text-black font-semibold">S/ 0.00</span>
-          </div> */}
-        </div>
+        </div> */}
       </div>
     </div>
   );

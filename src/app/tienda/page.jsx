@@ -1,48 +1,64 @@
-import Image from "next/image";
 import {
   obtenerCategorias,
   obtenerMarcas,
   obtenerProductosFiltrados,
 } from "@/lib/api";
-import FiltrosDesktop from "@/components/FiltrosDesktop";
-import FiltrosMovil from "@/components/FiltrosMovil";
-import ScrollButtons from "@/components/BotonScroll";
-import ProductoCard from "@/components/ProductosGrid";
-import TiendaJs from "@/components/TiendaJs";
+import FiltrosDesktop from "@/components/Filtros/FiltrosDesktop";
+import FiltrosMovil from "@/components/Filtros/FiltrosMovil";
+import ScrollButtons from "@/components/Tiendas/BotonScroll";
+import ProductoCard from "@/components/Tiendas/ProductosGrid";
+import TiendaJs from "@/components/Tiendas/TiendaJs";
+import WspFlot from "@/components/WspFlot";
+import { obtenerMensajesWsp } from "@/lib/api";
 
 export const metadata = {
-  title: "Compra productos online | Prasen",
-  description: "Compra productos de calidad. Entrega nacional en Prasen.",
+  title: "Sholi - Compra productos online",
+  description:
+    "Explora productos LED de calidad: focos, lámparas, reflectores y más. Envío a todo el Perú con garantía y soporte inmediato.",
   alternates: {
-    canonical: "https://prasen.pe/tienda",
+    canonical:
+      `${process.env.NEXT_PUBLIC_SITE_URL}/tienda`,
   },
   openGraph: {
-    title: "Compra productos online | Prasen",
-    description: "Compra productos de calidad. Entrega nacional en Prasen.",
-    url: "https://prasen.pe/tienda",
+    title: "Sholi - Compra productos online",
+    description:
+      "Descubre la mejor selección de productos LED con entrega nacional en Perú.",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/tienda`,
     type: "website",
+    siteName: "Sholi Iluminación",
     images: [
       {
-        url: "https://prasen.pe/opengraph/tienda-banner.webp",
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/banners-paginas/Banner-Tienda-General.webp`,
         width: 1200,
         height: 630,
-        alt: "Prasen tienda",
+        alt: "Sholi Tienda Online",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Compra productos online | Prasen",
-    description: "Compra productos de calidad. Entrega nacional en Prasen.",
-    images: ["https://prasen.pe/opengraph/tienda-banner.webp"],
+    site: "@sholi_iluminacion",
+    title: "Sholi - Compra productos online",
+    description:
+      "Focos, lámparas, reflectores LED y más. Compra online con garantía y envío a todo el Perú.",
+    images: [
+      `${process.env.NEXT_PUBLIC_SITE_URL}/banners-paginas/Banner-Tienda-General.webp`,
+    ],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
   },
+  category: "ecommerce",
 };
 
 export default async function PaginaTiendaGeneral({ searchParams, params }) {
+  const wspData = await obtenerMensajesWsp();
+  const numero = wspData?.numero ;
+  const mensajeBase = wspData?.mensajeProducto ;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ;
+
   const resolvedSearchParams = await searchParams;
   const resolvedParams = await params;
 
@@ -124,7 +140,7 @@ export default async function PaginaTiendaGeneral({ searchParams, params }) {
             "position": index + 1,
             "name": p.nombre,
             "image": p.urlImagen1,
-            "url": `https://prasen.pe/producto/${p.nombreSlug}`,
+            "url": `${process.env.NEXT_PUBLIC_SITE_URL}/producto/${p.nombreSlug}`,
             "brand": { "@type": "Brand", "name": p.marca },
             ...(p.precio && {
               "offers": {
@@ -143,35 +159,10 @@ export default async function PaginaTiendaGeneral({ searchParams, params }) {
         itemScope
         itemType="https://schema.org/CollectionPage"
       >
-        <div className="max-w-[1520px] mx-auto">
-          <div className="flex flex-col mb-8">
-            {/* Visualmente primero (pero va después en HTML): Banner */}
-            <div className="w-full">
-              {/* Banner aquí */}
-              <div className="hidden md:block relative aspect-[1520/280] w-full rounded-xl overflow-hidden">
-                <Image
-                  src="/banners-paginas/Banner-Tienda-General.webp"
-                  alt={`Banner de la tienda general`}
-                  fill
-                  className="object-cover"
-                  sizes="(min-width: 768px) 1520px"
-                  priority
-                />
-              </div>
-              <div className="block md:hidden relative aspect-[430/150] w-full rounded-xl overflow-hidden">
-                <Image
-                  src="/banners-paginas/Tienda-Movil.webp"
-                  alt={`Banner de la tienda general`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 767px) 430px"
-                  priority
-                />
-              </div>
-            </div>
-          
+        <div className="max-w-[1520px] mx-auto min-h-[2028px] md:min-h-[1200px]">
+          <div className="flex flex-col mb-4">
             {/* Semánticamente primero (pero va visualmente después): H1 */}
-            <h1 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4 mt-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#3C1D2A] mb-2 mt-2">
               Tienda
             </h1>
           </div>
@@ -185,12 +176,9 @@ export default async function PaginaTiendaGeneral({ searchParams, params }) {
             <FiltrosDesktop categorias={categorias} marcas={marcas} />
 
             <div className="flex-1">
-              <div className="flex items-center justify-between gap-4 mb-4">
+              <div className="flex items-center justify-between gap-4 mb-4 h-10 md:h-auto">
                 <div className="md:hidden">
-                  <FiltrosMovil
-                    categorias={categorias}
-                    marcas={marcas}
-                  />
+                  <FiltrosMovil categorias={categorias} marcas={marcas} />
                 </div>
                 <div id="zona-combobox" className="flex-shrink-0"></div>
               </div>
@@ -206,10 +194,9 @@ export default async function PaginaTiendaGeneral({ searchParams, params }) {
               ) : (
               <>
                 <div id="contenedor-grid" className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-                  
                   {/* SSR: productos ya renderizados */}
-                  {productosFiltrados.map((prod) => (
-                    <ProductoCard key={prod.id_producto} producto={prod} />
+                  {productosFiltrados.map((prod, index) => (
+                    <ProductoCard key={prod.id_producto} producto={prod} index={index} numero={numero} mensajeBase={mensajeBase} baseUrl={baseUrl} />
                   ))}
                 </div>
               </>)}
@@ -221,6 +208,8 @@ export default async function PaginaTiendaGeneral({ searchParams, params }) {
             </div>
           </div>
         </div>
+
+        <WspFlot/>
       </main>
     </>
   );

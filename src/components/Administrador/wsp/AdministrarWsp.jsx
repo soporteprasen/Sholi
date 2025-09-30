@@ -5,6 +5,17 @@ import { editarMensajeWsp, obtenerMensajesWsp } from "@/lib/api";
 import BotonWsp from "@/components/BotonWsp";
 
 export default function AdministrarWsp() {
+  const guardarEstadoAdministracion = () => {
+    localStorage.setItem("EstadoAdministracionCategoria", 0);
+    localStorage.setItem("EstadoAdministracionProducto", 0);
+    localStorage.setItem("EstadoAdministracionMarca", 0);
+    localStorage.setItem("EstadoAdministracionUnidad", 0);
+  }
+
+  useEffect(() => {
+    guardarEstadoAdministracion();
+  }, []);
+
   const [MensajeProducto, setMensajeProducto] = useState("");
   const [MensajeGlobal, setMensajeGlobal] = useState("");
   const [Numero, setNumero] = useState("");

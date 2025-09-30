@@ -1,0 +1,150 @@
+#Buscador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;            /* full width en mobile */
+  max-width: 500px;
+  background: #fff;
+  margin: 0 auto;         /* centrado */
+}
+
+#Buscador input.gsc-input {
+  border: none !important;
+  outline: none !important;
+  font-size: 14px;
+  width: 100% !important;   /* que ocupe todo */
+  box-shadow: none !important;
+  padding: 0px !important;
+}
+
+#Buscador td.gsc-input {
+  padding: 0px !important;
+}
+
+#Buscador button.gsc-search-button,
+#Buscador input.gsc-search-button {
+  background-color: #2563eb !important;
+  border: none !important;
+  padding: 11px 12px !important;
+  height: 100%;
+  cursor: pointer;
+  color: white !important;
+  transition: background 0.2s ease;
+}
+
+#Buscador button.gsc-search-button:hover,
+#Buscador input.gsc-search-button:hover {
+  background-color: #1d4ed8 !important;
+}
+
+#Buscador td.gsc-search-button{
+  height: 100% !important;
+}
+
+/* opcional: ocultar botón de limpiar */
+#Buscador .gsc-clear-button {
+  display: none !important;
+}
+/* Quitar el margen inferior que Google aplica por defecto */
+#Buscador .gsc-search-box.gsc-search-box-tools {
+  margin-bottom: 0 !important;
+}
+
+/* Quitar margen inferior al form base del buscador */
+#Buscador .gsc-search-box {
+  margin-bottom: 0 !important;
+}
+
+.gsc-imageResult.seleccionada {
+  border: 3px solid #7c141b !important;
+  border-radius: 6px;
+  height: auto;
+}
+
+.gsc-imageResult.Error {
+  border: 3px solid red !important;
+  border-radius: 6px;
+  height: auto;
+  position: relative;
+  opacity: 0.6; /* se ve apagada */
+}
+
+.gsc-imageResult.Error::after {
+  content: "✖ No procesable";
+  position: absolute;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .gsc-expansionArea {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px; /* opcional: separación entre items */
+  }
+}
+
+.gsc-imageResult.cargando {
+  border: 3px solid #2563eb !important; /* azul como tu botón */
+  border-radius: 6px;
+  position: relative;
+  height: auto;
+  opacity: 0.7; /* semi-transparente para indicar espera */
+  overflow: hidden;
+}
+
+/* Animación tipo shimmer (esqueleto) */
+.gsc-imageResult.cargando::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
+  }
+}
+
+/* Opcional: spinner central */
+.gsc-imageResult.cargando::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(37, 99, 235, 0.3); /* azul claro */
+  border-top: 3px solid #2563eb; /* azul fuerte */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.gsc-imageResult.gsc-imageResult-popup.gsc-result.gs-selectedImageResult {
+  height: auto !important;
+}

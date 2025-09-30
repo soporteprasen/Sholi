@@ -1,45 +1,50 @@
-// app/layout.js 
-import "./globals.css";
-import { Geist, Geist_Mono } from "next/font/google";
-import Header from "@/components/Header";
-import Wasapp from "@/components/WspFlot";
-import Footer from "@/components/Footer";
-import FBlock from "@/components/Fblock";
-import Script from "next/script";
+{/* *************************************************************************************** */}
+{/*                                Layout principal                                         */}
+{/* *************************************************************************************** */}
 
+{/* Importacion de bloque que se usaran */}
+
+import "./globals.css"; // css global
+import { Geist, Geist_Mono } from "next/font/google"; // cargadores de fuentes para las familias Geist y Geist Mono.
+import Header from "@/components/Header/Header"; // Header(contiene el encabezado tanto para Desktop como para Mobile)
+import Footer from "@/components/Footer/Footer"; // Footer(contiene el footer tanto en desktop como en movil)
+import FBlock from "@/components/Footer/Fblock"; // Bloque que solo aparece en movil
+import Script from "next/script"; // Sirve para tipar y documentar cómo cargar scripts de terceros de forma optimizada en una app Next.
+import AnimationHead from "@/components/AnimationHead";
+import PageLoader from "@/components/PageLoader";
+
+{/* configuración de la fuente Geist con next/font/google */}
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
+{/* configuración de la fuente monoespaciada Geist Mono con next/font/google */}
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
+{/* Metadatos de la pagina */}
 export const metadata = {
-  metadataBase: new URL('https://prasen.pe'),
+  metadataBase: new URL(`${process.env.NEXT_PUBLIC_SITE_URL}`),
   title: {
-    default: 'Tienda de Iluminación - Productos LED',
-    template: '%s | Tienda de Iluminación',
+    default: 'Sholi - Tienda de productos ferreteros',
+    template: '%s | Tienda de productos ferreteros',
+  },
+  icons: {
+    icon: "/favicon.svg",
   },
   description: 'Compra productos LED como focos, lámparas y reflectores con envío a todo el Perú. Garantía y calidad certificada.',
-  keywords: [
-    "iluminación LED",
-    "focos LED",
-    "lámparas LED",
-    "tienda de luces Perú",
-    "productos eléctricos",
-    "comprar online",
-  ],
   openGraph: {
-    title: 'Tienda de Iluminación - Productos LED',
+    title: 'Sholi - tienda de productos ferreteros',
     description: 'Explora nuestra tienda online con productos LED certificados y envío a todo el país.',
-    url: 'https://prasen.pe',
-    siteName: 'Prasen',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
+    siteName: 'Sholi',
     images: [
       {
-        url: 'https://prasen.pe/opengraph/home.webp',
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/logo/logo-principal-prasen.webp`,
         width: 1200,
         height: 630,
         alt: 'Tienda de Iluminación LED',
@@ -50,36 +55,31 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@prasen_led',
-    title: 'Prasen | Productos LED en Perú',
+    site: '@sholi_iluminacion',
+    title: 'Sholi - productos ferreteros',
     description: 'Compra en línea iluminación LED con garantía y entrega rápida en Perú.',
-    images: ['https://prasen.pe/opengraph/home.webp'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    nocache: false,
+    images: [`${process.env.NEXT_PUBLIC_SITE_URL}/logo/logo-principal-prasen.webp`],
   },
   alternates: {
-    canonical: 'https://prasen.pe',
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL}`,
   },
-  authors: [{ name: 'Prasen', url: 'https://prasen.pe' }],
-  creator: 'Prasen',
-  publisher: 'Prasen',
-  category: 'ecommerce',
 };
 
+{/* Bloque principal */}
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
+      <head>
+        <AnimationHead />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <PageLoader/>
         <Header />
         <main
-          className="bg-gray-50 md: pt-33"
+          className="bg-gray-50 md: pt-[130px]"
         >
           {children}
         </main>
-        <Wasapp />
         <Footer />
         <div className="block md:hidden pt-11">
           <FBlock />
@@ -88,12 +88,12 @@ export default function RootLayout({ children }) {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "Prasen",
-            url: "https://prasen.pe",
-            logo: "https://prasen.pe/logo-prasen.png",
+            name: "Sholi",
+            url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
+            logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo/logo-principal-prasen.webp`,
             sameAs: [
-              "https://facebook.com/praseniluminacion",
-              "https://instagram.com/prasenled",
+              "https://facebook.com/sholi",
+              "https://instagram.com/sholi",
             ],
             contactPoint: {
               "@type": "ContactPoint",

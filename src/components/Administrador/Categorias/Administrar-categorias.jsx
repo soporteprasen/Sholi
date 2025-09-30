@@ -1,34 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { obtenerCategorias, EliminarCategoria } from "@/lib/api";
-import CrearCategoria from "@/components/Administrador/Acciones/Crear/CrearCategoria";
-import EditarCategoria from "@/components/Administrador/Acciones/Editar/EditarCategoria";
+import { obtenerCategoriasAxios, EliminarCategoria } from "@/lib/api";
+import CrearCategoria from "@/components/Administrador/Categorias/CrearCategoria";
+import EditarCategoria from "@/components/Administrador/Categorias/EditarCategoria";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdministrarCategorias() {
+  const guardarEstadoAdministracion = (num) => {
+    localStorage.setItem("EstadoAdministracionCategoria", num);
+    localStorage.setItem("EstadoAdministracionProducto", 0);
+    localStorage.setItem("EstadoAdministracionMarca", 0);
+    localStorage.setItem("EstadoAdministracionUnidad", 0);
+  }
+
   const [categorias, setCategorias] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [modoCreacion, setModoCreacion] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
-  useEffect(() => {
-    async function fetchCategorias() {
-      try {
-        const data = await obtenerCategorias();
-        setCategorias(data || []);
-      } catch (error) {
-        alert("Error al obtener categorías:", error);
-      } finally {
-        setCargando(false);
-      }
+  const recargarCategorias = async () => {
+    try {
+      setCargando(true);
+      const data = await obtenerCategoriasAxios();
+      setCategorias(data);
+    } catch (error) {
+      alert("Error al obtener categorías:", error);
+    } finally {
+      setCargando(false);
     }
-
-    fetchCategorias();
-  }, []);
+  };
 
   const handleEliminar = (id) => {
     const categoria = categorias.find((cat) => cat.id_categoria === id);
@@ -52,6 +56,7 @@ export default function AdministrarCategorias() {
   };
 
   const handleEditar = (categoria) => {
+    guardarEstadoAdministracion(2);
     setCategoriaSeleccionada(categoria);
     setModoEdicion(true);
   };
@@ -63,8 +68,14 @@ export default function AdministrarCategorias() {
   };
 
   const handleAgregarCategoria = () => {
+    guardarEstadoAdministracion(2);
     setModoCreacion(true);
   };
+
+  useEffect(() => {
+    guardarEstadoAdministracion(1);
+    recargarCategorias();
+  }, []);
 
   return (
     <div className="p-4">
@@ -72,6 +83,7 @@ export default function AdministrarCategorias() {
         <EditarCategoria
           categoria={categoriaSeleccionada}
           onCancel={handleCancelarAccion}
+          onSuccess={recargarCategorias}
         />
       ) : modoCreacion ? (
         <CrearCategoria onCancel={handleCancelarAccion} />

@@ -1,0 +1,141 @@
+@layer utilities {
+  @keyframes accordion-down {
+    0% {
+      height: 0;
+    }
+    100% {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    0% {
+      height: var(--radix-accordion-content-height);
+    }
+    100% {
+      height: 0;
+    }
+  }
+  .animate-accordion-down {
+    animation: accordion-down 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  }
+  .animate-accordion-up {
+    animation: accordion-up 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  }
+}
+
+@layer utilities {
+  /* Estado inicial invisible para todo lo que observes */
+  .scroll-animate {
+    will-change: opacity, transform;
+  }
+
+  /* La animación que aplicamos desde el observer */
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+}
+
+/* Keyframes */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@layer utilities {
+  /* ✅ Fade In */
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  /* ✅ Fade Out */
+  .animate-fadeOut {
+    animation: fadeOut 0.3s ease forwards;
+  }
+
+  /* ✅ Slide In desde la izquierda */
+  .animate-slideInLeft {
+    animation: slideInLeft 0.5s ease forwards;
+  }
+
+  /* ✅ Slide In desde la derecha */
+  .animate-slideInRight {
+    animation: slideInRight 0.5s ease forwards;
+  }
+
+  /* ✅ Slide In desde arriba */
+  .animate-slideInTop {
+    animation: slideInTop 0.5s ease forwards;
+  }
+
+  /* ✅ Slide In desde abajo */
+  .animate-slideInBottom {
+    animation: slideInBottom 0.5s ease forwards;
+  }
+
+  /* ✅ Zoom In */
+  .animate-zoomIn {
+    animation: zoomIn 0.6s ease forwards;
+  }
+}
+@layer utilities {
+  .animate-pageLoadDown {
+    animation: pageLoadDown 0.3s ease forwards;
+  }
+}
+
+@keyframes pageLoadDown {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-20px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(20px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInTop {
+  from { transform: translateY(-20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInBottom {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes banner-slide {
+  0% { transform: translateX(0%); }
+  33% { transform: translateX(-100%); }
+  66% { transform: translateX(-200%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-banner-slide {
+  animation: banner-slide 1s infinite ease-in-out;
+}

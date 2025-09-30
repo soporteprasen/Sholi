@@ -1,35 +1,43 @@
 "use client";
 
+{/* Bloque de importaciones */}
+
+{/* De react */}
 import { useEffect, useState } from "react";
+
+{/* Llamadas al back */}
 import { obtenerUnidades, EliminarUnidad } from "@/lib/api";
-import CrearUnidad from "@/components/Administrador/Acciones/Crear/CrearUnidad";
-import EditarUnidad from "@/components/Administrador/Acciones/Editar/EditarUnidad";
+
+{/* Bloques de edicion y creacion de unidad */}
+import CrearUnidad from "@/components/Administrador/Unidades/CrearUnidad";
+import EditarUnidad from "@/components/Administrador/Unidades/EditarUnidad";
+
+{/* Boton de shad cn (Innecesario, cambiable por un boton normal) */}
 import { Button } from "@/components/ui/button";
+
+{/* Iconos de lucide react (cambiable por svg simples) */}
 import { Pencil, Trash } from "lucide-react";
+
+{/* Skeleton (fallback para la carga de unidades) */}
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdministrarMarcas() {
+  {/* Definir estados del sidebar en 0 a excepcion del nuetro */}
+  const guardarEstadoAdministracion = (num) => {
+    localStorage.setItem("EstadoAdministracionCategoria", 0);
+    localStorage.setItem("EstadoAdministracionProducto", 0);
+    localStorage.setItem("EstadoAdministracionMarca", 0);
+    localStorage.setItem("EstadoAdministracionUnidad", num);
+  }
+
+  {/* seccion de declaraciones */}
   const [unidad, setUnidad] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [modoCreacion, setModoCreacion] = useState(false);
   const [unidadSeleccionada, setUnidadSeleccionada] = useState(null);
 
-  useEffect(() => {
-    async function fetchUnidades() {
-      try {
-        const data = await obtenerUnidades();
-        setUnidad(data || []);
-      } catch (error) {
-        alert("Error al obtener unidades:", error);
-      } finally {
-        setCargando(false);
-      }
-    }
-
-    fetchUnidades();
-  }, []);
-
+  {/* funcion de eliminacion de unidad de medida */}
   const handleEliminar = (id) => {
     if (window.confirm("¿Estás seguro de eliminar esta unidad?")) {
       EliminarUnidad(id)
@@ -48,20 +56,40 @@ export default function AdministrarMarcas() {
     }
   };
 
+  {/* Seccion de editar */}
   const handleEditar = (data) => {
     setUnidadSeleccionada(data);
     setModoEdicion(true);
   };
 
+  {/* Seccion de cancelacion */}
   const handleCancelarAccion = () => {
     setUnidadSeleccionada(null);
     setModoEdicion(false);
     setModoCreacion(false);
   };
 
+  {/* Seccion de aumentar */}
   const handleAgregarUnidad = () => {
     setModoCreacion(true);
   };
+
+  {/* llama a la api, obtiene los datos y luego guarda los estados de administracion */}
+  useEffect(() => {
+    async function fetchUnidades() {
+      try {
+        const data = await obtenerUnidades();
+        setUnidad(data || []);
+      } catch (error) {
+        alert("Error al obtener unidades:", error);
+      } finally {
+        setCargando(false);
+      }
+    }
+
+    fetchUnidades();
+    guardarEstadoAdministracion(1);
+  }, []);
 
   return (
     <div className="p-4">

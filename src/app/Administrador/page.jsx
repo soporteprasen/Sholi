@@ -1,16 +1,15 @@
 "use client";
-import React, { useState } from "react";  
 
-import {
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import React, { useEffect, useState } from "react";
+
+import {  SidebarProvider,  SidebarTrigger} from "@/components/ui/sidebar";
 
 import SidebarAdmin from "@/components/Administrador/Sidebar-Admin";
-import { LogOut } from "lucide-react";
-import { logout } from "@/lib/api";
+import { items } from "@/components/Administrador/Sidebar-Admin"
 
-import { ShieldCheck } from "lucide-react";
+import { LogOut, ShieldCheck } from "lucide-react";
+
+import { logout, verificarSesion } from "@/lib/api";
 
 import AdministrarProductos from "@/components/Administrador/Productos/Administrar-productos";
 import AdministrarCategorias from "@/components/Administrador/Categorias/Administrar-categorias";
@@ -20,19 +19,82 @@ import AdministrarWsp from "@/components/Administrador/wsp/AdministrarWsp";
 
 export default function AdminPage() {
   const [opcionSeleccionada, setOpcionSeleccionada] = useState("inicio");
+  
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedIndex = localStorage.getItem("sidebar-selected-index");
+      if (savedIndex && !isNaN(savedIndex)) {
+        const index = parseInt(savedIndex, 10);
+        setOpcionSeleccionada(items[index - 1]?.value || "inicio");
+      }
+    }
+  }, []);
+
+  const [reloadKey, setReloadKey] = useState(0)
+  const handleSelect = (value) => {
+    setOpcionSeleccionada(value)
+    setReloadKey(prev => prev + 1) // fuerza nuevo render aunque sea mismo value
+  }
+
+  const [sesionVerificada, setSesionVerificada] = useState(false);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const verificar = async () => {
+      try {
+        const sesion = await verificarSesion();
+        if (!sesion) {
+          window.location.href = "/Sesion";
+          return;
+        }
+        setSesionVerificada(true);
+      } catch (err) {
+        console.error("Error verificando sesión:", err);
+        setError("No se pudo verificar la sesión.");
+        setTimeout(() => {
+          window.location.href = "/Sesion";
+        }, 1500);
+      } finally {
+        setCargando(false);
+      }
+    };
+    verificar();
+  }, []);
+
+  if (cargando) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-gray-600 text-sm animate-pulse">
+          Verificando sesión...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
+  if (!sesionVerificada) return null;
 
   return (
     <SidebarProvider>
       <ContenidoAdministrador
         opcionSeleccionada={opcionSeleccionada}
-        setOpcionSeleccionada={setOpcionSeleccionada}
+        onSelectOption={handleSelect}
+        reloadKey={reloadKey}           
       />
     </SidebarProvider>
   );
 }
 
-//Componentes hijos separados para usar `useSidebar()` dentro del Provider
-function ContenidoAdministrador({ opcionSeleccionada, setOpcionSeleccionada }) {
+// Componentes hijos separados para usar `useSidebar()` dentro del Provider
+function ContenidoAdministrador({ opcionSeleccionada, onSelectOption, reloadKey }) {
   const handleLogout = () => {
     logout()
       .then(() => {
@@ -46,15 +108,15 @@ function ContenidoAdministrador({ opcionSeleccionada, setOpcionSeleccionada }) {
   const renderContenido = () => {
     switch (opcionSeleccionada) {
       case "administrar-productos":
-        return <AdministrarProductos />;
+        return <AdministrarProductos key={`productos-${reloadKey}`}/>;
       case "administrar-categorias":
-        return <AdministrarCategorias />;
+        return <AdministrarCategorias key={`categorias-${reloadKey}`}/>;
       case "administrar-marcas":
-        return <AdministrarMarcas />;
+        return <AdministrarMarcas key={`marcas-${reloadKey}`}/>;
       case "administrar-unidades":
-        return <AdministrarUnidades />;
+        return <AdministrarUnidades key={`unidades-${reloadKey}`}/>;
       case "administrar-wsp":
-        return <AdministrarWsp />;
+        return <AdministrarWsp key={`wsp-${reloadKey}`}/>;
       default:
         return (
           <div className="h-full w-full max-w-3xl mx-auto flex flex-col items-center justify-center text-center px-4 py-10 bg-gray-50 shadow-inner">
@@ -74,7 +136,7 @@ function ContenidoAdministrador({ opcionSeleccionada, setOpcionSeleccionada }) {
 
   return (
     <div className="flex min-h-screen w-full">
-      <SidebarAdmin onSelectOption={setOpcionSeleccionada}/>
+      <SidebarAdmin onSelectOption={onSelectOption} />
       <main className="flex-1 w-full">
         {/* Barra superior solo visible en móviles */}
         <div className="md:hidden flex justify-between items-center p-2">
@@ -98,6 +160,7 @@ function ContenidoAdministrador({ opcionSeleccionada, setOpcionSeleccionada }) {
             <span>Cerrar sesión</span>
           </button>
         </div>
+
         {renderContenido()}
       </main>
     </div>

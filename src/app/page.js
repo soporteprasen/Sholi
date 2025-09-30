@@ -1,53 +1,57 @@
 {/* Sliders */ }
-import Slider from "@/components/Slider";
-import SliderJS from "@/components/SliderJs";
+import Slider from "@/components/Home/Slider";
+import SliderJS from "@/components/Home/SliderJs";
 
 import Script from "next/script";
 
 {/* Carrusel productos con descuento */ }
-import CarruselProductos from "@/components/CarruselProductos";
+import CarruselProductos from "@/components/Home/CarruselProductos";
 
 {/* Llamadas Api */ }
 import { obtenerMarcas, obtenerProductosConDescuento, obtenerCategorias } from "@/lib/api";
 
 {/* Carrusel banners */ }
-import CarruselBanner from "@/components/CarruselBanner";
-import CarruselBannerJS from "@/components/CarruselBannerJS";
+import BannerHome from "@/components/CarrucelBanner/CarruselHome"
 
 {/* Carrusel banner */ }
-import Banner from "@/components/Banner";
+import Banner from "@/components/Home/Banner";
 
 {/* Carrusel categorias */ }
-import CarruselCategorias from "@/components/CarruselCategorias";
+import CarruselCategorias from "@/components/Home/CarruselCategorias";
 
 {/* CuadroDeBanners */ }
-import CuadroDeBanners from "@/components/CuadroDeBanners";
+import CuadroDeBanners from "@/components/Home/CuadroDeBanners";
 
 {/* Preguntas Frecuentes */ }
 import PreguntasFrecuentes from "@/components/PreguntasFrecuentes";
 
+{/* WspFlot */}
+import WspFlot from "@/components/WspFlot";
+
+{/* Animacion de viewport */}
+import AnimationBlock from "@/components/Animaciones/AnimationBlock";
+
+{/* Metadatos del Index */}
 export async function generateMetadata() {
   return {
-    title: "Tienda de Iluminación LED | Compra Focos y Lámparas Online en Perú",
-    description:
-      "Explora la mayor variedad de productos LED: focos, lámparas, reflectores y más. Envío a todo el Perú. Calidad certificada y atención inmediata.",
+    title: "Sholi - Productos ferreteros",
+    description: "Explora la mayor variedad de productos LED: focos, lámparas, reflectores y más. Envío a todo el Perú. Calidad certificada y atención inmediata.",
     keywords: [
       "iluminación LED",
       "tienda de focos",
       "lámparas LED",
       "reflectores LED",
       "productos eléctricos Perú",
-      "comprar luces online",
+      "comprar luces online"
     ],
     openGraph: {
-      title: "Tienda de Iluminación LED en Perú",
-      description:
-        "Descubre ofertas en productos de iluminación LED certificados. Compra online con garantía y envío nacional.",
-      url: "https://www.sholi.com",
+      title: "Sholi - tienda de productos ferreteros en todo el Perú",
+      description: "Descubre ofertas en productos de iluminación LED certificados. Compra online con garantía y envío nacional.",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
       siteName: "Sholi Iluminación",
       images: [
         {
-          url: "https://www.sholi.com/opengraph/home-banner.webp",
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/logo/logo-principal-prasen.webp`,
           width: 1200,
           height: 630,
           alt: "Sholi | Tienda de Iluminación LED en Perú",
@@ -60,9 +64,8 @@ export async function generateMetadata() {
       card: "summary_large_image",
       site: "@sholi_iluminacion",
       title: "Tienda de Iluminación LED | Sholi Perú",
-      description:
-        "Focos, lámparas, reflectores LED y más. Envíos rápidos en todo Perú.",
-      images: ["https://www.sholi.com/opengraph/home-banner.webp"],
+      description: "Focos, lámparas, reflectores LED y más. Envíos rápidos en todo Perú.",
+      images: [`${process.env.NEXT_PUBLIC_SITE_URL}/logo/logo-principal-prasen.webp`],
     },
     robots: {
       index: true,
@@ -70,9 +73,9 @@ export async function generateMetadata() {
       nocache: false,
     },
     alternates: {
-      canonical: "https://www.sholi.com",
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}`,
     },
-    authors: [{ name: "Sholi", url: "https://www.sholi.com" }],
+    authors: [{ name: "Sholi", url: `${process.env.NEXT_PUBLIC_SITE_URL}` }],
     creator: "Sholi",
     publisher: "Sholi",
     category: "ecommerce",
@@ -80,45 +83,38 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const imagenesCarrusel = [
-    {
-      desktop: "/carrucel-desktop/BANNERTECNOLOGICO.webp",
-      mobile: "/carrucel-mobil/PREMIOS-POR-FIESTAS-PATRIAS.webp",
-      alt: "Compra tecnología avanzada y participa por premios especiales",
-    },
-    {
-      desktop: "/carrucel-desktop/MEMORIAS-RAM-PREMIER-PRINT.webp",
-      mobile: "/carrucel-mobil/NUEVOS-SUMINISTROS-DISTRIBUCION.webp",
-      alt: "Nuevas memorias RAM de alto rendimiento en stock",
-    },
-    {
-      desktop: "/carrucel-desktop/INTELIGENCIA-ARTIFICIAL.webp",
-      mobile: "/carrucel-mobil/NUEVO-PRODUCTO-TUBERIA-LIQUID-TIGHT.webp",
-      alt: "Tecnología con inteligencia artificial para tu negocio",
-    },
-    {
-      desktop: "/carrucel-desktop/NUEVAS-MARCAS-PLACAS-MADRE-ASUS.webp",
-      mobile: "/carrucel-mobil/NUEVO-PRODUCTO-TUBERIA-LIQUID-TIGHT.webp",
-      alt: "Tecnología con inteligencia artificial para tu negocio",
-    },
-  ];
+  {/* AnimationHead */}
+  <AnimationBlock/>
 
-  const productosCrudos = await obtenerProductosConDescuento();
+  {/* Bloque para mostrar los productos con descuento en el slider de abajo*/}
+  const productosCrudos = await obtenerProductosConDescuento(); // llamada a la api para obtener los productos con descuento
   const productos = productosCrudos.map((producto) => ({
     ...producto,
-    urlImagen1: producto.urlImagen1 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen1 : "/not-found.webp",
-    urlImagen2: producto.urlImagen2 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen2 : "/not-found.webp",
+    urlImagen1: producto.urlImagen1 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen1 : "/not-found.webp", //se filtra la imagen 1 para ver si tiene o no
+    urlImagen2: producto.urlImagen2 ? process.env.NEXT_PUBLIC_SIGNALR_URL + producto.urlImagen2 : "/not-found.webp", //se filtra la imagen 2 para ver si tiene o no
   }));
 
-  const categorias = await obtenerCategorias();
+  {/* Bloque para mostrar los productos con descuento en el slider de abajo*/}
+  const categorias = await obtenerCategorias(); // llamada a la api para obtener las categorias
   const categoriasConImagenes = categorias.map(cat => {
     let imagenUrl = "";
     if (cat.imagen_categoria) {
-      imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + cat.imagen_categoria;
+      imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + cat.imagen_categoria; //se filtra la imagen para ver si tiene o no
     }
     return { ...cat, imagen: imagenUrl };
   });
 
+  {/* Bloque para obtener marcas */}
+  const marcas = await obtenerMarcas();
+  const marcasConImagenes = marcas.map(mark => {
+    let imagenUrl = "";
+    if (mark.imagen_marca) {
+      imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + mark.imagen_marca; // se filtra la imagen para ver si tiene o no
+    }
+    return { ...mark, imagen: imagenUrl };
+  });
+
+  {/* Bloque para las imagenes de los certificados */}
   const certificados = [
     {
       imagen: "/certificados/Ansi.webp",
@@ -150,15 +146,31 @@ export default async function Home() {
     },
   ];
 
-  const marcas = await obtenerMarcas();
-  const marcasConImagenes = marcas.map(mark => {
-    let imagenUrl = "";
-    if (mark.imagen_marca) {
-      imagenUrl = process.env.NEXT_PUBLIC_SIGNALR_URL + mark.imagen_marca;
-    }
-    return { ...mark, imagen: imagenUrl };
-  });
+  {/* Imagenes para el carrucel principal */}
+  const imagenesCarrusel = [
+    {
+      desktop: "/carrucel-desktop/BANNERTECNOLOGICO.webp",
+      mobile: "/carrucel-mobil/PREMIOS-POR-FIESTAS-PATRIAS.webp",
+      alt: "Compra tecnología avanzada y participa por premios especiales",
+    },
+    {
+      desktop: "/carrucel-desktop/MEMORIAS-RAM-PREMIER-PRINT.webp",
+      mobile: "/carrucel-mobil/NUEVOS-SUMINISTROS-DISTRIBUCION.webp",
+      alt: "Nuevas memorias RAM de alto rendimiento en stock",
+    },
+    {
+      desktop: "/carrucel-desktop/INTELIGENCIA-ARTIFICIAL.webp",
+      mobile: "/carrucel-mobil/NUEVO-PRODUCTO-TUBERIA-LIQUID-TIGHT.webp",
+      alt: "Tecnología con inteligencia artificial para tu negocio",
+    },
+    {
+      desktop: "/carrucel-desktop/NUEVAS-MARCAS-PLACAS-MADRE-ASUS.webp",
+      mobile: "/carrucel-mobil/NUEVO-PRODUCTO-TUBERIA-LIQUID-TIGHT.webp",
+      alt: "Tecnología con inteligencia artificial para tu negocio",
+    },
+  ];
 
+  {/* Imagenes para el bloque de banners abajo */}
   const Banners = [
     {
       imagen: "/cuadro-banners/NOVEDADES-NUEVA-LINEA-POWERTOP-PLUS.webp",
@@ -189,10 +201,10 @@ export default async function Home() {
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Sholi Iluminación",
-          url: "https://www.sholi.com",
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
           potentialAction: {
             "@type": "SearchAction",
-            target: "https://www.sholi.com/buscar?q={search_term_string}",
+            target: `${process.env.NEXT_PUBLIC_SITE_URL}/tienda?buscar={search_term_string}`,
             "query-input": "required name=search_term_string"
           }
         })}
@@ -203,8 +215,8 @@ export default async function Home() {
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Sholi Iluminación",
-          url: "https://www.sholi.com",
-          logo: "https://www.sholi.com/logo-sholi.webp",
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
+          logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo/logo-principal-prasen.webp`,
           contactPoint: {
             "@type": "ContactPoint",
             telephone: "+51 999 999 999",
@@ -219,11 +231,15 @@ export default async function Home() {
           ]
         })}
       </Script>
+      
+      {/* Titulo invisible */}
       <h1 className="sr-only">
         Sholi - Tienda de iluminación LED y productos eléctricos en Perú
       </h1>
-      <CarruselBanner imagenes={imagenesCarrusel} />
-      <CarruselBannerJS />
+
+      {/* Carrusel de banners */}
+      <BannerHome imagenes={imagenesCarrusel} />
+
       <section className="max-w-5xl mx-auto px-4 py-10 text-gray-700">
         <h2 className="text-2xl font-bold mb-4">Bienvenido a Sholi Perú</h2>
         <p>
@@ -233,32 +249,43 @@ export default async function Home() {
           Enviamos a todo el Perú con atención inmediata.
         </p>
       </section>
+
+      {/* Bloque para mostrar las categorias, en aso de que haya una o mas*/}
       {categorias.length > 0 && categorias[0].valorConsulta === "1" && (
         <>
-          <h2 className="text-3xl font-bold mb-6 text-center">
-            Nuestras categorias
+          <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-[#7c141b] to-[#3C1D2A] text-transparent bg-clip-text">
+            Nuestras categorías
           </h2>
           <CarruselCategorias categorias={categoriasConImagenes} />
+          <SliderJS modo="categorias" />
         </>)
       }
+
+      {/* Slider para el certificado y su js para el funcionamiento */}
       <Slider modo="certificado" contenido={certificados} />
       <SliderJS modo="certificado" />
+
+      {/* Bloque que muestra los productos con descuento en caso de haberlos */}
       {productosCrudos.length > 0 && productosCrudos[0].valorConsulta === "1" && (
         <>
           <CarruselProductos productos={productos} />
         </>
       )}
-
       <Banner />
       <CuadroDeBanners contenido={Banners} />
-      {marcas.length > 0 && marcas[0].valorConsulta === "1" &&(
+      
+      {/* Bloque para mostrar las marcas en caso de haberlos */}
+      {marcas.length > 0 && marcas[0].valorConsulta === "1" && (
         <>
           <Slider modo="marcas" contenido={marcasConImagenes} />
           <SliderJS modo="marcas" intervalo={4000} />
         </>
       )}
 
+      {/* Bloque para mostrar el acordeno de preguntas frecuentes */}
       <PreguntasFrecuentes />
+
+      <WspFlot/>
     </>
   );
 }

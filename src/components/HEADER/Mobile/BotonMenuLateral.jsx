@@ -5,6 +5,10 @@ import { Menu } from "lucide-react";
 export default function BotonMenuLateral() {
   const abrirMenu = () => {
     document.getElementById("menu-lateral")?.classList.remove("-translate-x-full");
+
+     // Bloquear scroll de fondo
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
   };
 
   useEffect(() => {
@@ -14,6 +18,10 @@ export default function BotonMenuLateral() {
       // Cerrar cualquier acordeón abierto
       const triggers = document.querySelectorAll("[data-state='open']");
       triggers.forEach(el => el.setAttribute("data-state", "closed"));
+
+      // Restaurar scroll
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
     };
 
     // Cerrar desde botón con id

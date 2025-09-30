@@ -13,7 +13,7 @@ export default function PreguntasFrecuentes() {
       className="max-w-3xl mx-auto px-4 py-10"
     >
       <h2
-        className="text-2xl md:text-3xl font-bold text-center mb-8 text-[#0F2F55]"
+        className="text-2xl md:text-3xl font-bold text-center mb-8 bg-gradient-to-r from-[#7c141b] to-[#3C1D2A] bg-clip-text text-transparent"
         id="titulo-faq"
       >
         Preguntas Frecuentes
@@ -65,7 +65,7 @@ function BloquePregunta({ valor, pregunta, respuesta }) {
       value={valor}
       className="bg-gray-100 rounded-lg px-4 py-2 border border-gray-200"
     >
-      <AccordionTrigger className="text-left font-medium text-[#0F2F55] hover:no-underline transition-all [&[data-state=open]>svg]:rotate-180">
+      <AccordionTrigger className="text-left font-medium text-[#3C1D2A] hover:text-[#7c141b] hover:no-underline transition-all [&[data-state=open]>svg]:rotate-180">
         {pregunta}
       </AccordionTrigger>
       <AccordionContent className="text-gray-700 leading-relaxed">

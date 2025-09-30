@@ -3,6 +3,9 @@ import Image from "next/image";
 import { obtenerCategorias } from "@/lib/api";
 
 export default async function MmProductos() {
+  const getVariant = (url, size) =>
+    url.replace("/original/", `/${size}/`);
+
   const data = await obtenerCategorias();
   const categoriasValidas = data.filter((c) => c.valorConsulta === "1");
 
@@ -27,18 +30,21 @@ export default async function MmProductos() {
         <Link
           key={cat.slug_categoria}
           href={`/categoria/${cat.slug_categoria}`}
-          className="flex flex-col items-center text-center hover:opacity-90 transition"
+          className="flex flex-col items-center text-center hover:opacity-90 transition group"
         >
-          <div className="w-10 h-10 relative">
+          <div className="w-14 h-10 relative">
             <Image
-              src={cat.logo}
-              alt={cat.nombre}
+              src={getVariant(cat.logo, "xs") || "/not-found.webp"}
+              alt={`icono de la categoria ${cat.nombre}`}
               fill
+              unoptimized
               className="object-contain"
-              sizes="40px"
+              sizes="56px"
             />
           </div>
-          <span className="text-sm text-gray-700">{cat.nombre}</span>
+          <span className="text-sm transition-colors">
+            {cat.nombre}
+          </span>
         </Link>
       ))}
     </div>

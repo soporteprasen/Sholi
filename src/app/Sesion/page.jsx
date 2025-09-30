@@ -1,15 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // para redireccionar
+import { useRouter } from "next/navigation";
 import { User, Lock } from "lucide-react";
-import { Login } from "@/lib/api";
+import { Login, logout } from "@/lib/api";
 
 export default function LoginAdminPage() {
   const [usuario, setUsuario] = useState("");
   const [clave, setClave] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    logout().then(() => {
+      console.log("✅ Logout ejecutado automáticamente al ingresar manualmente a /Sesion");
+    }).catch(err => {
+      console.error("❌ Error al deslogear:", err);
+    });
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,13 +27,15 @@ export default function LoginAdminPage() {
       const data = await Login(usuario, clave);
 
       if (data.valorConsulta === "1") {
-        alert("¡Inicio de sesión exitoso!");
+        alert("¡Inicio Exitoso!");
         router.push("/Administrador");
-      } else {
+      } else if (data.valorConsulta === "2") {
         alert("Credenciales incorrectas. Inténtalo de nuevo.");
+      } else {
+        console.warn(data.mensajeConsulta)
       }
     } catch (error) {
-      alert("Error de conexión. Inténtalo más tarde.");
+      alert("Error de conexión. Inténtalo más tarde." + error);
     } finally {
       setLoading(false);
     }
@@ -80,9 +90,8 @@ export default function LoginAdminPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full ${
-              loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"
-            } text-white py-3 rounded-md font-semibold text-lg transition duration-300`}
+            className={`w-full ${loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"
+              } text-white py-3 rounded-md font-semibold text-lg transition duration-300`}
           >
             {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>

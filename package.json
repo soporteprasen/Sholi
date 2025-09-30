@@ -46,5 +46,8 @@
     "last 2 Safari versions",
     "not IE 11",
     "not dead"
-  ]
+  ],
+  "engines": {
+    "node": "20.x"
+  }
 }

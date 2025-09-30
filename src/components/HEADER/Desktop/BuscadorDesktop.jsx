@@ -75,15 +75,26 @@ export default function Buscador() {
   }, [texto]);
 
   const redirigirTienda = () => {
+    if(texto.trim().length == 0)
+    {
+      router.push(`/tienda`);
+    }else{
+      router.push(`/tienda?buscar=${encodeURIComponent(texto)}`);
+    }
+  };
+
+  useEffect(() => {
     setMostrarResultados(false);
     setTexto("");
-    router.push(`/tienda?buscar=${encodeURIComponent(texto)}`);
-  };
+  }, [router]);
 
   return (
     <div className="relative col-span-1" ref={contenedorRef}>
       {/* Icono buscador */}
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" aria-hidden="true" />
+      <Search
+        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"
+        aria-hidden="true"
+      />
 
       {/* Input */}
       <input
@@ -93,8 +104,14 @@ export default function Buscador() {
         value={texto}
         onChange={(e) => setTexto(e.target.value)}
         onFocus={() => setMostrarResultados(resultados.length > 0)}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            redirigirTienda();
+          }
+        }}
         placeholder="Buscar productos..."
-        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#7c141b]"
       />
 
       {/* Resultados */}
@@ -104,7 +121,7 @@ export default function Buscador() {
             {resultados.map((prod) => (
               <div
                 key={prod.id_producto}
-                className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
+                className="flex items-center gap-3 p-3 hover:bg-[#7c141b]/10 cursor-pointer"
                 onClick={() => handleClickProducto(prod)}
               >
                 <div className="w-12 h-12 flex-shrink-0">
@@ -116,7 +133,7 @@ export default function Buscador() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 line-clamp-1">
+                  <p className="text-sm font-semibold text-[#3C1D2A] line-clamp-1">
                     {prod.nombre}
                   </p>
                   <p className="text-xs text-gray-500 line-clamp-1">
@@ -124,7 +141,7 @@ export default function Buscador() {
                   </p>
                 </div>
 
-                <div className="ml-auto text-sm font-bold text-green-600 whitespace-nowrap">
+                <div className="ml-auto text-sm font-bold text-[#7c141b] whitespace-nowrap">
                   S/ {prod.precio?.toFixed(2)}
                 </div>
               </div>
@@ -133,7 +150,7 @@ export default function Buscador() {
 
           {tieneMas && (
             <div
-              className="sticky bottom-0 bg-white border-t border-gray-200 p-3 text-center text-indigo-600 text-sm cursor-pointer hover:underline"
+              className="sticky bottom-0 bg-white border-t border-gray-200 p-3 text-center text-[#7c141b] hover:text-[#3C1D2A] text-sm cursor-pointer hover:underline"
               onClick={redirigirTienda}
             >
               VER TODOS LOS PRODUCTOS...

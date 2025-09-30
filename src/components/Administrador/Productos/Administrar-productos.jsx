@@ -4,41 +4,33 @@ import { useEffect, useState } from "react";
 import { obtenerProductosAdmin, EliminarProducto } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash } from "lucide-react";
-import EditarProducto from "@/components/Administrador/Acciones/Editar/EditarProducto";
-import CrearProducto from "@/components/Administrador/Acciones/Crear/CrearProducto";
+import EditarProducto from "@/components/Administrador/Productos/EditarProducto";
+import CrearProducto from "@/components/Administrador/Productos/CrearProducto";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import "@/components/Administrador/Buscador.css";
+
 export default function AdministrarProductos() {
+  const guardarEstadoAdministracion = (num) => {
+    localStorage.setItem("EstadoAdministracionProducto", num)
+    localStorage.setItem("EstadoAdministracionCategoria", 0);
+    localStorage.setItem("EstadoAdministracionMarca", 0);
+    localStorage.setItem("EstadoAdministracionUnidad", 0);
+  }
+
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [modoCreacion, setModoCreacion] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  useEffect(() => {
-    async function fetchProductos() {
-      try {
-        const data = await obtenerProductosAdmin();
-        if(data.valorConsulta === "1")
-        {  
-          setProductos(data);
-        }
-      } catch (error) {
-        console.error("Error al obtener productos:", error);
-      } finally {
-        setCargando(false);
-      }
-    }
-
-    fetchProductos();
-  }, []);
-
-  const handleEliminar = (id) => {
+  const handleEliminar =async (id) => {
     if (window.confirm("¿Estás seguro de eliminar este producto?")) {
-      const data = EliminarProducto(id)
+      const data = await EliminarProducto(id)
       if(data.valorConsulta === "1")
       {
         alert("Producto eliminado correctamente")
+        fetchProductos();
       }
       else
       {
@@ -48,6 +40,13 @@ export default function AdministrarProductos() {
   };
 
   const handleEditar = (producto) => {
+    const script = document.getElementById("google-cse-script");
+    console.log(script)
+    if (script) {
+      console.log("entro al if para eliminar el script")
+      script.remove();
+    }
+    guardarEstadoAdministracion(2);
     setProductoSeleccionado(producto);
     setModoEdicion(true);
   };
@@ -56,8 +55,15 @@ export default function AdministrarProductos() {
     fetchProductos();
     recargarYVolverAlInicio();
     setProductoSeleccionado(null);
+    guardarEstadoAdministracion(1);
     setModoEdicion(false);
     setModoCreacion(false);
+    const script = document.getElementById("google-cse-script");
+    console.log(script)
+    if (script) {
+      console.log("entro al if para eliminar el script")
+      script.remove();
+    }
   };
 
   const fetchProductos = async () => {
@@ -75,16 +81,51 @@ export default function AdministrarProductos() {
   const recargarYVolverAlInicio = async () => {
     await fetchProductos();
     setProductoSeleccionado(null);
+    guardarEstadoAdministracion(1);
     setModoEdicion(false);
     setModoCreacion(false);
 
     // Desplazar al inicio (opcional)
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const script = document.getElementById("google-cse-script");
+    if (script) {
+      script.remove();
+    }
   };
 
   const handleAgregarProducto = () => {
+    const script = document.getElementById("google-cse-script");
+    if (script) {
+      script.remove();
+    }
+    guardarEstadoAdministracion(2);
     setModoCreacion(true);
   };
+
+  useEffect(() => {
+    const script = document.getElementById("google-cse-script");
+    if (script) {
+      script.remove();
+    }
+
+    async function fetchProductos() {
+      try {
+        const data = await obtenerProductosAdmin();
+        if(data[0].valorConsulta === "1")
+        {  
+          setProductos(data);
+        }
+      } catch (error) {
+        console.error("Error al obtener productos:", error);
+      } finally {
+        setCargando(false);
+      }
+    }
+
+    guardarEstadoAdministracion(1);
+    fetchProductos();
+  }, []);
 
   return (
     <div className="p-4">
@@ -126,9 +167,10 @@ export default function AdministrarProductos() {
               <table className="w-full border border-gray-200 text-sm md:text-base">
                 <thead className="hidden md:table-header-group bg-gray-100">
                   <tr>
+                    <th className="text-left p-2 border-b">Codigo</th>
                     <th className="text-left p-2 border-b">Nombre</th>
                     <th className="text-left p-2 border-b">Precio</th>
-                    <th className="text-left p-2 border-b">Stock</th>
+                    <th className="text-left p-2 border-b">Stock</th> 
                     <th className="text-left p-2 border-b">Acciones</th>
                   </tr>
                 </thead>
@@ -145,6 +187,10 @@ export default function AdministrarProductos() {
                         key={producto.id_producto}
                         className="border md:table-row flex flex-col md:flex-row mb-4 md:mb-0 bg-white rounded shadow-sm md:shadow-none"
                       >
+                        <td className="p-3 border-b md:border-b-0 md:table-cell">
+                          <span className="font-semibold md:hidden">codigo: </span>
+                          {producto.codigo}
+                        </td>
                         <td className="p-3 border-b md:border-b-0 md:table-cell max-w-full break-all overflow-hidden">
                           <span className="font-semibold md:hidden">Nombre: </span>
                           {producto.nombre}

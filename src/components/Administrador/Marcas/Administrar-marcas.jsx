@@ -1,35 +1,39 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { obtenerMarcas, EliminarMarca } from "@/lib/api"; 
-import CrearMarca from "@/components/Administrador/Acciones/Crear/CrearMarca";
-import EditarMarca from "@/components/Administrador/Acciones/Editar/EditarMarca";
+import { obtenerMarcasAxios, EliminarMarca } from "@/lib/api"; 
+import CrearMarca from "@/components/Administrador/Marcas/CrearMarca";
+import EditarMarca from "@/components/Administrador/Marcas/EditarMarca";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdministrarMarcas() {
+  const guardarEstadoAdministracion = (num) => {
+    localStorage.setItem("EstadoAdministracionCategoria", 0);
+    localStorage.setItem("EstadoAdministracionProducto", 0);
+    localStorage.setItem("EstadoAdministracionMarca", num);
+    localStorage.setItem("EstadoAdministracionUnidad", 0);
+  }
+
   const [marcas, setMarcas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [modoCreacion, setModoCreacion] = useState(false);
   const [marcaSeleccionada, setMarcaSeleccionada] = useState(null);
 
-  useEffect(() => {
-    async function fetchMarcas() {
-      try {
-        const data = await obtenerMarcas();
-        setMarcas(data || []);
-      } catch (error) {
-        console.error("Error al obtener marcas:", error);
-      } finally {
-        setCargando(false);
-      }
+  const recargarMarcas = async () => {
+    try {
+      setCargando(true);
+      const data = await obtenerMarcasAxios();
+      setMarcas(data);
+    } catch (error) {
+      alert("Error al obtener marcas:", error);
+    } finally {
+      setCargando(false);
     }
-
-    fetchMarcas();
-  }, []);
-
+  };
+  
   const handleEliminar = (id) => {
     if (window.confirm("¿Estás seguro de eliminar esta marca?")) {
       EliminarMarca(id)
@@ -49,6 +53,7 @@ export default function AdministrarMarcas() {
   };
 
   const handleEditar = (marca) => {
+    guardarEstadoAdministracion(2);
     setMarcaSeleccionada(marca);
     setModoEdicion(true);
   };
@@ -60,13 +65,23 @@ export default function AdministrarMarcas() {
   };
 
   const handleAgregarMarca = () => {
+    guardarEstadoAdministracion(2);
     setModoCreacion(true);
   };
+
+  useEffect(() => {
+    guardarEstadoAdministracion(1);
+    recargarMarcas();
+  }, []);
 
   return (
     <div className="p-4">
       {modoEdicion ? (
-        <EditarMarca marca={marcaSeleccionada} onCancel={handleCancelarAccion} />
+        <EditarMarca 
+        marca={marcaSeleccionada} 
+        onCancel={handleCancelarAccion} 
+        onSuccess={recargarMarcas}
+        />
       ) : modoCreacion ? (
         <CrearMarca onCancel={handleCancelarAccion} />
       ) : (

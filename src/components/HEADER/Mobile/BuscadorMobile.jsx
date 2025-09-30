@@ -74,7 +74,7 @@ export default function BuscadorMobil() {
   return (
     <div className="relative pt-2.5" ref={contenedorRef}>
       {/* Input + icono */}
-      <div className="flex items-center bg-[#1f3d7a] px-3 py-2">
+      <div className="flex items-center bg-[#7c141b] px-3 py-2">
         <input
           type="text"
           placeholder="Buscar productos ..."
