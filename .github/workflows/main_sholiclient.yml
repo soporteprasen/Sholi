@@ -24,6 +24,10 @@ jobs:
           node-version: '20.x'
 
       - name: npm install, build, and test
+        env:
+             NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+             NEXT_PUBLIC_SIGNALR_URL: ${{ secrets.NEXT_PUBLIC_SIGNALR_URL }}
+             NEXT_PUBLIC_TOKEN_SECRET: ${{ secrets.NEXT_PUBLIC_TOKEN_SECRET }}
         run: |
           npm install
           npm run build --if-present
@@ -62,4 +66,5 @@ jobs:
           app-name: 'sholiclient'
           slot-name: 'Production'
           package: .
+
           
