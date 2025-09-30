@@ -6,7 +6,7 @@
 
 import "./globals.css"; // css global
 import { Geist, Geist_Mono } from "next/font/google"; // cargadores de fuentes para las familias Geist y Geist Mono.
-import Header from "@/components/Header/Header.jsx"; // Header(contiene el encabezado tanto para Desktop como para Mobile)
+import Header from "@/components/Header2/Header.jsx"; // Header(contiene el encabezado tanto para Desktop como para Mobile)
 import Footer from "@/components/Footer/Footer"; // Footer(contiene el footer tanto en desktop como en movil)
 import FBlock from "@/components/Footer/Fblock"; // Bloque que solo aparece en movil
 import Script from "next/script"; // Sirve para tipar y documentar cómo cargar scripts de terceros de forma optimizada en una app Next.
