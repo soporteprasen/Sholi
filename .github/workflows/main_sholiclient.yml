@@ -31,12 +31,16 @@ jobs:
         run: |
           npm ci
           npm run build
+      - name: List build output
+        run: |
+          echo "Contenido del directorio después de build:"
+          ls -la
 
       - name: Prepare build artifact
         run: |
           mkdir build-artifact
-          cp -r .next build-artifact/
-          cp -r public build-artifact/
+          [ -d .next ] && cp -r .next build-artifact/ || echo ".next no encontrado"
+          [ -d public ] && cp -r public build-artifact/ || echo "public no encontrado"
           cp package.json build-artifact/
           cp package-lock.json build-artifact/
           [ -f next.config.js ] && cp next.config.js build-artifact/
@@ -75,3 +79,4 @@ jobs:
           app-name: 'sholiclient'
           slot-name: 'Production'
           package: .
+
